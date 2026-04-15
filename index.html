@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Software Developer</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <h1 class="logo">My Portfolio</h1>
+                <ul class="nav-links">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#projects">Projects</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h2 class="hero-title">Software Developer</h2>
+                    <p class="hero-subtitle">Building innovative solutions with clean architecture and modern technologies</p>
+                    <a href="#projects" class="btn btn-primary">View My Work</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="projects">
+            <div class="container">
+                <h2 class="section-title">Featured Projects</h2>
+                <div class="projects-grid">
+                    <!-- Project 1: Interactive Gameboard -->
+                    <article class="project-card" data-project="gameboard">
+                        <div class="project-image">
+                            <div class="project-placeholder">
+                                <svg class="project-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                                    <path d="M2 17l10 5 10-5"/>
+                                    <path d="M2 12l10 5 10-5"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="project-content">
+                            <h3 class="project-title">Interactive Gameboard</h3>
+                            <p class="project-description">
+                                An innovative hexagon-based gameboard with NFC readers and RGB LEDs, controlled by Raspberry Pi Pico W with real-time mobile app integration.
+                            </p>
+                            <div class="project-tags">
+                                <span class="tag">Raspberry Pi</span>
+                                <span class="tag">NFC</span>
+                                <span class="tag">.NET MAUI</span>
+                                <span class="tag">IoT</span>
+                            </div>
+                            <a href="projects/gameboard.html" class="btn btn-secondary">Learn More</a>
+                        </div>
+                    </article>
+
+                    <!-- Project 2: The Spare Shed -->
+                    <article class="project-card" data-project="spare-shed">
+                        <div class="project-image">
+                            <div class="project-placeholder">
+                                <svg class="project-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                                    <polyline points="9 22 9 12 15 12 15 22"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="project-content">
+                            <h3 class="project-title">The Spare Shed</h3>
+                            <p class="project-description">
+                                A family-friendly equipment rental platform built with clean architecture, featuring Nuxt 3 SSG frontend and ASP.NET Core backend with complete layer separation.
+                            </p>
+                            <div class="project-tags">
+                                <span class="tag">Nuxt 3</span>
+                                <span class="tag">ASP.NET Core</span>
+                                <span class="tag">Vue 3</span>
+                                <span class="tag">Clean Architecture</span>
+                            </div>
+                            <a href="projects/spare-shed.html" class="btn btn-secondary">Learn More</a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="contact">
+            <div class="container">
+                <h2 class="section-title">Get In Touch</h2>
+                <p class="contact-text">Interested in working together? Let's connect!</p>
+                <div class="contact-links">
+                    <a href="mailto:mark@bohaychuk.com" class="contact-link">Email</a>
+                    <a href="https://github.com/mbohaychuk" class="contact-link" target="_blank">GitHub</a>
+                    <a href="https://www.linkedin.com/in/mark-bohaychuk-a47a1b263" class="contact-link" target="_blank">LinkedIn</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
