@@ -51,8 +51,9 @@
             <section class="project-section">
                 <h2>Solution in Practice</h2>
                 <p class="project-text">
-                    The system is built around a Raspberry Pi Pico W that communicates with a .NET MAUI mobile app over WebSockets, 
-                    supporting multiple phones at once for a true shared experience. The app handles character creation and battle 
+                    The system is built around a Raspberry Pi Pico W that communicates with a .NET MAUI mobile app over a TCP socket
+                    protocol with JSON messages. The architecture supports two phones — one per physical board — sharing state through
+                    the server so both players see the same game world. The app handles character creation and battle 
                     flow; when a character levels up, the updated stats are immediately written back to the figurine's NFC tag by 
                     the board. Terrain changes in the app recolor the corresponding physical tiles, keeping "screen" and table 
                     perfectly in sync.
@@ -73,7 +74,7 @@
                         <strong>Dynamic Character Progression:</strong> Level-ups and stat changes written back to figurine tags in real-time during gameplay
                     </li>
                     <li>
-                        <strong>Multi-Player Shared Experience:</strong> WebSocket support for multiple phones participating in the same game session
+                        <strong>Two-Phone Shared Session:</strong> TCP socket server links two phones (one per physical board) with shared state broadcast to both clients
                     </li>
                     <li>
                         <strong>Real-Time Terrain Control:</strong> App-driven terrain changes instantly reflected on physical tiles via RGB LEDs
@@ -104,7 +105,7 @@
                         <ul>
                             <li>.NET MAUI Mobile App</li>
                             <li>MicroPython Firmware</li>
-                            <li>WebSocket Communication</li>
+                            <li>TCP Sockets + JSON Messages</li>
                             <li>SPI Protocol</li>
                             <li>NFC/RFID Integration</li>
                         </ul>
@@ -146,10 +147,10 @@
                 <div class="highlight-box">
                     <h3>Threading Architecture Evolution</h3>
                     <p>
-                        Early firmware builds placed the WebSocket server on a secondary thread, which produced flaky client 
-                        connections and dropped messages because MicroPython's threading is still experimental. The team inverted 
-                        responsibilities—running the server on the main thread and moving NFC I/O to the worker thread—restoring 
-                        stability and making the system reliable under load.
+                        MicroPython's threading is still experimental, and putting the socket server on a secondary thread produced
+                        flaky client connections and dropped messages. The fix was inverting responsibilities — running the server
+                        on the main thread and pushing NFC I/O to the worker thread — which restored stability and made the system
+                        reliable under load.
                     </p>
                 </div>
                 <div class="highlight-box">
@@ -195,9 +196,9 @@
                 <div class="highlight-box">
                     <h3>Threading & Stability</h3>
                     <p>
-                        MicroPython threading remains a careful balancing act, requiring strict separation of concerns between the 
-                        I/O thread and the main event loop. The solution—server on main thread, NFC on worker thread—proved critical 
-                        for reliable WebSocket connections.
+                        MicroPython threading remains a careful balancing act, requiring strict separation of concerns between the
+                        I/O thread and the main event loop. The solution—server on main thread, NFC on worker thread—proved critical
+                        for reliable client connections.
                     </p>
                 </div>
                 <div class="highlight-box">
