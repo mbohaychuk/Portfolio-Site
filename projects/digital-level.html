@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Level - Portfolio</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <h1 class="logo"><a href="../index.html">Portfolio</a></h1>
+                <a href="../index.html" class="back-link">← Back to Projects</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="project-detail">
+        <div class="container">
+            <div class="project-header">
+                <h1 class="project-detail-title">Digital Level</h1>
+                <p class="project-detail-subtitle">Two-axis digital level built from scratch on an ATmega328</p>
+            </div>
+
+            <section class="project-section">
+                <h2>Overview</h2>
+                <p class="project-text">
+                    A two-axis digital level I built from scratch around an ATmega328 microcontroller, an ADXL343 accelerometer, and an SSD1306 OLED display. The device runs on four AA batteries through a linear regulator, reads the accelerometer on a fixed interval, converts raw XYZ values into a tilt angle, and draws a dot on the OLED that moves away from center as the unit tilts. Past a threshold on either axis it stops drawing the dot and lights up the corresponding side of the screen instead. Everything lives inside a 3D-printed case with a custom PCB. Built as a course project alongside my capstone.
+                </p>
+            </section>
+
+            <section class="project-section">
+                <h2>Technology Stack</h2>
+                <div class="tech-grid">
+                    <div class="tech-item">
+                        <h3>Electronics</h3>
+                        <ul>
+                            <li>ATmega328PB @ 8 MHz</li>
+                            <li>ADXL343 accelerometer</li>
+                            <li>SSD1306 OLED</li>
+                            <li>LD1117V33 regulator</li>
+                            <li>4×AA battery pack</li>
+                        </ul>
+                    </div>
+                    <div class="tech-item">
+                        <h3>Firmware</h3>
+                        <ul>
+                            <li>Embedded C</li>
+                            <li>I²C bus</li>
+                            <li>Fixed-interval sampling</li>
+                        </ul>
+                    </div>
+                    <div class="tech-item">
+                        <h3>Mechanical</h3>
+                        <ul>
+                            <li>Custom PCB</li>
+                            <li>3D-printed PLA case</li>
+                            <li>Replaceable AA battery door</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="project-section">
+                <h2>Architecture &amp; Design Choices</h2>
+                <div class="highlight-box">
+                    <p>
+                        The screen updates around five times a second, which makes the level feel sluggish next to a commercial unit. I'd assumed the bottleneck was I²C transport, but the bus is already at 400 kHz and the renderer only flushes dirty banks, not the full framebuffer — both of those are fine. The real cost is the circle drawing routine. It walks the perimeter in fine angular steps and calls <code>cos()</code> and <code>sin()</code> on every step, four circles per frame between the two clear-and-redraw passes. The ATmega328 has no FPU, so each soft-float trig call is roughly a thousand cycles, and at 8 MHz the trig alone burns about 125 ms per frame — almost exactly the observed 5–7 Hz. The fix is a precomputed unit-circle lookup table in PROGMEM (or a midpoint Bresenham circle), which would drop per-frame cost by two orders of magnitude and push the refresh well past 50 Hz.
+                    </p>
+                </div>
+                <div class="highlight-box">
+                    <p>
+                        The 3D-printed case was sized to fit a 4×AA battery holder alongside the PCB, OLED, and buttons. I forgot to put a channel in it for the battery wires to reach the board. Rather than reprint the whole case I jerry-rigged the wiring after the fact.
+                    </p>
+                </div>
+                <div class="highlight-box">
+                    <p>
+                        This project ran in parallel with my capstone, and a few things got cut when time ran out. Tap-to-wake via the ADXL343 interrupt pin was in the design but never implemented. A tilt-controlled game and a beeper that would chirp as you approached level were both stretch goals that didn't survive. Sleep and low-power modes got disabled entirely rather than tuned, trading battery life for one less thing to debug under deadline.
+                    </p>
+                </div>
+            </section>
+
+            <section class="project-section">
+                <h2>What Works Today</h2>
+                <p class="project-text">
+                    Powers on, shows a dot that tracks the current tilt in real time, and lights up the corresponding side of the OLED when the tilt goes past threshold on either axis. That's the demo. No "approaching level" feedback — color, blink, beeper — shipped.
+                </p>
+            </section>
+
+            <section class="project-section">
+                <h2>Project Media</h2>
+                <div class="media-grid">
+                    <div class="media-item placeholder">
+                        <p>Photos coming soon</p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="project-cta">
+                <a href="../index.html" class="btn btn-primary">View More Projects</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Briefer - Portfolio</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <h1 class="logo"><a href="../index.html">Portfolio</a></h1>
+                <a href="../index.html" class="back-link">← Back to Projects</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="project-detail">
+        <div class="container">
+            <div class="project-header">
+                <h1 class="project-detail-title">Briefer</h1>
+                <p class="project-detail-subtitle">Personalized news intelligence with a multi-stage scoring cascade</p>
+            </div>
+
+            <section class="project-section">
+                <h2>Overview</h2>
+                <p class="project-text">
+                    Briefer started from a real problem. My brother is a policy analyst for the Government of Alberta, and a lot of his day-to-day is reading news to surface things that affect his file — not just articles that mention it directly, but second-order connections. A winter tick outbreak in Saskatchewan matters to someone managing Alberta deer populations, but the article probably won't mention Alberta or deer. Keyword alerts catch the obvious matches and miss everything like that. Briefer is the tool I'd want him to have: something that reasons about <em>why</em> an article matters to a specific person instead of pattern-matching on terms.
+                </p>
+            </section>
+
+            <section class="project-section">
+                <h2>Technology Stack</h2>
+                <div class="tech-grid">
+                    <div class="tech-item">
+                        <h3>Web API</h3>
+                        <ul>
+                            <li>ASP.NET Core (.NET 10)</li>
+                            <li>C#</li>
+                            <li>JWT auth</li>
+                            <li>PostgreSQL 16</li>
+                        </ul>
+                    </div>
+                    <div class="tech-item">
+                        <h3>ML Service</h3>
+                        <ul>
+                            <li>Python + FastAPI</li>
+                            <li>Ollama + Gemma 3</li>
+                            <li>sentence-transformers</li>
+                            <li>bge-reranker cross-encoder</li>
+                        </ul>
+                    </div>
+                    <div class="tech-item">
+                        <h3>Data &amp; Ingestion</h3>
+                        <ul>
+                            <li>PostgreSQL 16</li>
+                            <li>Qdrant (vectors)</li>
+                            <li>trafilatura (extraction)</li>
+                            <li>RSS-first ingestion</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="project-section">
+                <h2>Architecture &amp; Design Choices</h2>
+                <div class="highlight-box">
+                    <p>
+                        Running a frontier LLM against every candidate article doesn't work. Five thousand articles per user per day, scored by an LLM, would cost tens of dollars a day per user. That's not a product, that's a demo.
+                    </p>
+                    <p>
+                        So instead the system filters progressively. A cheap vector search runs first and drops the obvious non-matches. A cross-encoder reranks what's left. Only the borderline cases actually hit the LLM.
+                    </p>
+                    <p>
+                        Cost was the original driver, but running locally turned out to matter more. I run Briefer against Ollama with Gemma 3, which means the LLM serializes — I can't fan out parallel calls the way I could against a paid API. Every article the cascade filters out before the LLM is a direct speedup, not just a cost saving.
+                    </p>
+                </div>
+                <div class="highlight-box">
+                    <p>
+                        Twelve articles a cycle that the cross-encoder rejected still get sent to the LLM anyway. If any of them come back scored high, they get logged as cascade misses. Without a mechanism like that I'd have zero visibility into what the system was silently dropping; I'd only ever see what made it through, and the filtered-out pile would be invisible. Those logged misses are what I'll tune the thresholds against once there's enough usage data to see a pattern.
+                    </p>
+                </div>
+                <div class="highlight-box">
+                    <p>
+                        Users describe their interests in plain English paragraphs, not tags or boolean rules. Keyword alerts and tag filters only find matches on vocabulary overlap, which is exactly the cases Briefer is trying to get past. Giving the LLM rich context about <em>why</em> a user cares about something is what lets it reason about relevance instead of pattern-matching on terms.
+                    </p>
+                    <p>
+                        Each interest block is embedded and queried separately instead of being averaged into a single vector — standard multi-vector RAG. Averaging would blur niche interests into broad ones and defeat the whole point.
+                    </p>
+                </div>
+            </section>
+
+            <section class="project-section">
+                <h2>What Works Today</h2>
+                <p class="project-text">
+                    Briefer is still in active development. It runs end-to-end against Ollama with Gemma 3 — ingesting articles, building user profiles, running the cascade, producing scored and summarized briefings. I've demoed it to my brother and I'm hoping it becomes something he actually uses day-to-day. If that works, the next step is expanding it beyond one user and potentially turning it into a service.
+                </p>
+            </section>
+
+            <div class="project-cta">
+                <a href="https://github.com/mbohaychuk/Briefer" class="btn btn-secondary" target="_blank" style="margin-right: 1rem;">View on GitHub</a>
+                <a href="../index.html" class="btn btn-primary">View More Projects</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Search Copilot - Portfolio</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <h1 class="logo"><a href="../index.html">Portfolio</a></h1>
+                <a href="../index.html" class="back-link">← Back to Projects</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="project-detail">
+        <div class="container">
+            <div class="project-header">
+                <h1 class="project-detail-title">Job Search Copilot</h1>
+                <p class="project-detail-subtitle">Resume-to-job matcher with hybrid scoring and explanations</p>
+            </div>
+
+            <section class="project-section">
+                <h2>Overview</h2>
+                <p class="project-text">
+                    I was tired of the usual problem with job hunting: the same postings show up on five different sites, most of them aren't a real fit for my resume, and the sites themselves do a mediocre job of ranking them. Job Search Copilot is the matcher I wanted. It pulls postings from Greenhouse, Lever, company career pages, and a couple of aggregators, normalizes the job data, parses my resume into a structured profile, and ranks each job against that profile with an explanation for why it matches or doesn't. It focuses on Edmonton and Calgary software postings, but nothing about the pipeline is region-locked.
+                </p>
+            </section>
+
+            <section class="project-section">
+                <h2>Technology Stack</h2>
+                <div class="tech-grid">
+                    <div class="tech-item">
+                        <h3>Core</h3>
+                        <ul>
+                            <li>Python 3.12</li>
+                            <li>FastAPI</li>
+                            <li>Pydantic v2</li>
+                            <li>Docker Compose</li>
+                        </ul>
+                    </div>
+                    <div class="tech-item">
+                        <h3>Data</h3>
+                        <ul>
+                            <li>PostgreSQL 16</li>
+                            <li>pgvector</li>
+                            <li>SQLAlchemy 2 (async)</li>
+                            <li>Alembic</li>
+                        </ul>
+                    </div>
+                    <div class="tech-item">
+                        <h3>LLM &amp; Ingestion</h3>
+                        <ul>
+                            <li>OpenAI text-embedding-3-small</li>
+                            <li>OpenAI gpt-4o-mini</li>
+                            <li>httpx (async)</li>
+                            <li>BeautifulSoup / selectolax</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="project-section">
+                <h2>Architecture &amp; Design Choices</h2>
+                <div class="highlight-box">
+                    <p>
+                        There are two ingestion pipelines. The stored one persists jobs from sources that allow it — Greenhouse and Lever. The ephemeral one runs at query time, caches results in memory with a short TTL, and never writes to disk. The split exists because one of the sources I wanted to use is a job aggregator whose terms of service don't allow storing scraped data. Splitting lets me use it legally. Both paths share the same fetcher, normalizer, embedding, and ranking code underneath.
+                    </p>
+                </div>
+                <div class="highlight-box">
+                    <p>
+                        I designed the system around a ~$5/month budget. There's no runtime meter enforcing it — the budget shows up in the weight choices. Scoring every job with an LLM was off the table, so the ranking pipeline leans on deterministic rules: skill coverage (25%), title match (15%), seniority distance (10%), location fit (10%). Those rules cost nothing to run. 60% of the final score comes from them, and only the remaining 40% semantic-similarity portion actually touches an embedding. That weight split is what keeps the matcher cheap enough to run continuously instead of in occasional batches.
+                    </p>
+                </div>
+                <div class="highlight-box">
+                    <p>
+                        The obvious next step is an auto-apply bot. But auto-applying only works if the matching underneath is good. Otherwise you're blasting applications at jobs you don't fit and wasting time on both ends. So I built the matching layer first and stopped there. It's useful on its own — I can point it at my resume any week and get a ranked list with explanations, no application automation needed. Auto-apply becomes a future module, not the whole premise.
+                    </p>
+                </div>
+            </section>
+
+            <section class="project-section">
+                <h2>What Works Today</h2>
+                <p class="project-text">
+                    The system runs end-to-end. I can upload my resume, trigger a collection run across the configured sources, and get back a ranked list of postings with per-job explanations. It's a single-user MVP — it's meant for me to use, not to be a product. The auto-apply layer is deliberately not built yet, and won't be until I trust the ranking underneath.
+                </p>
+            </section>
+
+            <div class="project-cta">
+                <a href="https://github.com/mbohaychuk/Job-Search-Copilot" class="btn btn-secondary" target="_blank" style="margin-right: 1rem;">View on GitHub</a>
+                <a href="../index.html" class="btn btn-primary">View More Projects</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+</body>
+</html>

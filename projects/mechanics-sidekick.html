@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mechanics Sidekick - Portfolio</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <h1 class="logo"><a href="../index.html">Portfolio</a></h1>
+                <a href="../index.html" class="back-link">← Back to Projects</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="project-detail">
+        <div class="container">
+            <div class="project-header">
+                <h1 class="project-detail-title">Mechanics Sidekick</h1>
+                <p class="project-detail-subtitle">Local CLI RAG assistant for service manuals</p>
+            </div>
+
+            <section class="project-section">
+                <h2>Overview</h2>
+                <p class="project-text">
+                    I've got a bunch of PDF service manuals for an old car, scattered across dozens of files, none of them organized into one clean book. Finding a torque spec or a wiring diagram usually meant opening five PDFs and Ctrl-F'ing each one. Mechanics Sidekick is the tool I wanted for that problem. It's a local CLI where I upload the PDFs once, open a "job" for whatever I'm working on, and ask questions in natural language. Answers come back with citations to the exact document and page so I can go verify them myself.
+                </p>
+            </section>
+
+            <section class="project-section">
+                <h2>Technology Stack</h2>
+                <div class="tech-grid">
+                    <div class="tech-item">
+                        <h3>Core</h3>
+                        <ul>
+                            <li>Python 3.11+</li>
+                            <li>Typer + Rich (CLI)</li>
+                            <li>Pydantic Settings</li>
+                            <li>pytest</li>
+                        </ul>
+                    </div>
+                    <div class="tech-item">
+                        <h3>Data</h3>
+                        <ul>
+                            <li>SQLite</li>
+                            <li>SQLAlchemy 2.0</li>
+                            <li>PyMuPDF (PDF extraction)</li>
+                        </ul>
+                    </div>
+                    <div class="tech-item">
+                        <h3>Local LLM</h3>
+                        <ul>
+                            <li>Ollama</li>
+                            <li>gemma4:26b (chat)</li>
+                            <li>gemma4:e4b (context summaries)</li>
+                            <li>qwen3-embedding:4b</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="project-section">
+                <h2>Architecture &amp; Design Choices</h2>
+                <div class="highlight-box">
+                    <p>
+                        Everything runs against Ollama on my own machine. No API keys, no cloud, no monthly bill. The honest reason is I wanted to play with local LLMs and see what the current generation could actually do. Nothing leaving my machine is a nice side effect, not the driver.
+                    </p>
+                </div>
+                <div class="highlight-box">
+                    <p>
+                        Most RAG setups reach for pgvector, Qdrant, or Chroma. I just stored everything in SQLite, embeddings and all. This was my first RAG project, it's single-user, and I wanted to build it with tools I already knew rather than fighting a new database at the same time as learning RAG. Swapping in a real vector store later is straightforward if I ever need it, but for a single-user CLI SQLite is fine.
+                    </p>
+                </div>
+                <div class="highlight-box">
+                    <p>
+                        Naive chunking on service manuals destroys context — a torque value lifted from the middle of a procedure loses the engine variant, the system, and the step it belonged to. So before each chunk gets embedded, a lightweight LLM call generates a short summary that situates it (which engine, which system, which procedure) and that summary is prepended to the chunk text. It's contextual retrieval — the embedding represents the chunk plus its place in the manual, not just the raw words.
+                    </p>
+                    <p>
+                        Chunking itself is structure-aware rather than fixed-size. The PDF extractor reads font metadata (bold, ALL CAPS, font-size jumps) to detect section headings, and every chunk carries the section title it came from. That keeps related steps together and gives the retriever something to anchor on beyond raw similarity.
+                    </p>
+                </div>
+            </section>
+
+            <section class="project-section">
+                <h2>What Works Today</h2>
+                <p class="project-text">
+                    Add a vehicle, upload one or more PDF manuals, open a job against that vehicle, and chat with it. PDFs get extracted page by page, split into overlapping chunks, embedded locally, and stored in SQLite. When I ask a question the system embeds it, pulls the nearest chunks by brute-force cosine similarity over the full corpus, and sends them to the local LLM along with the question. There's no reranker — retrieved chunks go straight to the model. Answers come back cited. I've been running it against my own library of manuals.
+                </p>
+            </section>
+
+            <div class="project-cta">
+                <a href="https://github.com/mbohaychuk/Mechanics-Sidekick" class="btn btn-secondary" target="_blank" style="margin-right: 1rem;">View on GitHub</a>
+                <a href="../index.html" class="btn btn-primary">View More Projects</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+</body>
+</html>
