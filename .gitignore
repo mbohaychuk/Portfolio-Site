@@ -1,6 +1,8 @@
 # Local tooling
 .claude/
 CLAUDE.md
+AGENTS.md
+*.local.md
 .vscode/
 .idea/
 
