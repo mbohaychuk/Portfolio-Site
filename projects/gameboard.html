@@ -18,71 +18,23 @@
 
     <main class="project-detail">
         <div class="container">
-            <!-- Project Header -->
             <div class="project-header">
                 <h1 class="project-detail-title">Interactive Gameboard</h1>
-                <p class="project-detail-subtitle">Capstone Project: Modular Interactive Tabletop Gaming System</p>
+                <p class="project-detail-subtitle">Capstone: hex-tile tabletop board with NFC figurines and a .NET MAUI controller app</p>
             </div>
 
-            <!-- Project Overview -->
             <section class="project-section">
                 <h2>Overview</h2>
                 <p class="project-text">
-                    This capstone project reimagines classic tabletop gaming (Dungeons & Dragons, Warhammer, Catan) 
-                    with a modular, technology-assisted board that reacts to players in real time. Each hexagonal cell 
-                    in a seven-tile "honeycomb" module contains an RGB LED and an NFC reader. Figurines carry their own 
-                    character data on NFC tags, while a mobile app orchestrates setup, terrain, turns, and progression—entirely 
-                    offline. The result is a shared, dynamic play surface that blends traditional tactics with modern interactivity.
+                    A seven-hex tile module for tabletop play. Each hex has an RGB LED underneath and an NFC reader inside, so the board can light up terrain and recognize figurines placed on it. Characters live on NTAG215 tags glued under the figurine bases — no cloud, no accounts. A .NET MAUI phone app runs the game (character creation, terrain layout, turns, level-ups) and talks to the board over Wi-Fi. When a character levels up, the new stats get written back to the tag through the reader the figurine is sitting on. Built as my capstone project with a small team.
                 </p>
             </section>
 
-            <!-- Problem & Goals -->
             <section class="project-section">
-                <h2>Problem & Goals</h2>
+                <h2>How it works</h2>
                 <p class="project-text">
-                    Two goals drove the design: first, to make the game state visible and consistent for everyone at the table; 
-                    second, to let characters travel between boards without cloud accounts or internet. That meant local storage 
-                    on the figurines themselves, a responsive board that could change terrain and lighting on command, and a 
-                    control surface players already own—their phones.
+                    A Raspberry Pi Pico W runs the board firmware in MicroPython. It exposes a TCP socket and exchanges JSON messages with the MAUI app: which figurine is on which hex, which tile should be what color, write-back requests when a character's tag needs updating. Two phones can connect to the same server so both players see the same game state. LEDs are driven by a TLC5947 PWM driver over SPI because the Pico doesn't have enough native PWM channels for seven RGBs.
                 </p>
-            </section>
-
-            <!-- Solution in Practice -->
-            <section class="project-section">
-                <h2>Solution in Practice</h2>
-                <p class="project-text">
-                    The system is built around a Raspberry Pi Pico W that communicates with a .NET MAUI mobile app over a TCP socket
-                    protocol with JSON messages. The architecture supports two phones — one per physical board — sharing state through
-                    the server so both players see the same game world. The app handles character creation and battle 
-                    flow; when a character levels up, the updated stats are immediately written back to the figurine's NFC tag by 
-                    the board. Terrain changes in the app recolor the corresponding physical tiles, keeping "screen" and table 
-                    perfectly in sync.
-                </p>
-            </section>
-
-            <!-- Key Features -->
-            <section class="project-section">
-                <h2>Key Features</h2>
-                <ul class="feature-list">
-                    <li>
-                        <strong>Seven-Tile Modular Design:</strong> Honeycomb module with 3D-printed chassis and translucent resin caps for even light diffusion
-                    </li>
-                    <li>
-                        <strong>Offline Character Portability:</strong> Character data stored locally on NFC tags, enabling travel between boards without cloud accounts
-                    </li>
-                    <li>
-                        <strong>Dynamic Character Progression:</strong> Level-ups and stat changes written back to figurine tags in real-time during gameplay
-                    </li>
-                    <li>
-                        <strong>Two-Phone Shared Session:</strong> TCP socket server links two phones (one per physical board) with shared state broadcast to both clients
-                    </li>
-                    <li>
-                        <strong>Real-Time Terrain Control:</strong> App-driven terrain changes instantly reflected on physical tiles via RGB LEDs
-                    </li>
-                    <li>
-                        <strong>Fully Offline Operation:</strong> No internet or cloud services required—complete local functionality
-                    </li>
-                </ul>
             </section>
 
             <!-- Technologies -->
@@ -132,122 +84,35 @@
                 </div>
             </section>
 
-            <!-- Architecture & Design Choices -->
             <section class="project-section">
-                <h2>Architecture & Design Choices</h2>
+                <h2>Architecture &amp; Design Choices</h2>
                 <div class="highlight-box">
-                    <h3>Hardware Selection</h3>
                     <p>
-                        The architecture emphasizes cost, capability, and scale. The Raspberry Pi Pico W pairs with compact 
-                        RC522-mini NFC readers and NTAG215 tags (chosen for ubiquity and affordability). LED channel limits 
-                        were solved by offloading PWM to a TLC5947 driver over SPI. A 3D-printed chassis and translucent resin 
-                        tile caps deliver even diffusion, while the seven-hex module keeps the footprint manageable and portable.
+                        MicroPython's threading is experimental and we hit it early. The first attempt put the socket server on a secondary thread so NFC polling could keep running on the main one. Clients dropped messages and connections got flaky. Inverting the split — server on the main thread, NFC polling on the worker — fixed it. The lesson was that "main thread" isn't ceremonial in MicroPython; the runtime treats it specially and you want your latency-sensitive work there.
                     </p>
                 </div>
                 <div class="highlight-box">
-                    <h3>Threading Architecture Evolution</h3>
                     <p>
-                        MicroPython's threading is still experimental, and putting the socket server on a secondary thread produced
-                        flaky client connections and dropped messages. The fix was inverting responsibilities — running the server
-                        on the main thread and pushing NFC I/O to the worker thread — which restored stability and made the system
-                        reliable under load.
+                        I assumed the Pico's hardware PWM channels would cover seven RGB LEDs. They don't — that's twenty-one channels and the Pico has sixteen. The TLC5947 is a 24-channel constant-current PWM driver that takes SPI in and gives PWM out, which let me keep one bus to the board and offload all LED timing to the driver.
                     </p>
                 </div>
                 <div class="highlight-box">
-                    <h3>LED Control Solution</h3>
                     <p>
-                        The initial assumption that the Pico's PWM could directly drive all LEDs didn't hold. Introducing the 
-                        TLC5947 PWM driver solved the channel shortfall and enabled smooth lighting effects across all seven tiles.
+                        NFC reads off the RC522 mini are zone-tight — the figurine has to land squarely on the tile or the read misses. Inverting the readers under the printed caps got the antenna close to the tag, which helped, but placement is still something players learn rather than something the board forgives.
                     </p>
                 </div>
                 <div class="highlight-box">
-                    <h3>NFC Integration</h3>
                     <p>
-                        NFC proved conceptually deep with uneven documentation. Adopting and extending a community MicroPython 
-                        library accelerated a robust, well-structured integration that handles both reading character data and 
-                        writing stat updates back to figurine tags.
+                        We wanted to fab a custom PCB to fold the wiring into the printed chassis, but the lead time on a board run didn't fit the capstone schedule. The shipped version has hand-wired connections between modules instead. It works, but it's the rough edge of the build.
                     </p>
                 </div>
             </section>
 
-            <!-- What Works Today -->
             <section class="project-section">
                 <h2>What Works Today</h2>
                 <p class="project-text">
-                    One complete seven-tile module demonstrates the full loop: figures are created in-app, programmed to tags, 
-                    recognized by the board, and updated during play. The app changes terrain and color on the physical grid, 
-                    and multiple phones can participate in the same session. The build quality—diffused lighting, compact readers 
-                    mounted to hide LEDs, and a tidy printed chassis—makes it presentable and robust for demos.
+                    One seven-tile module, end-to-end. Create a character in the app, write it to a blank tag, place the figurine on the board, and it gets recognized. The app drives terrain colors on the physical tiles, two phones can join the same session and stay in sync, and stat changes from in-app battles write back to the tag through the reader the figurine is sitting on. Good enough to demo; not productized.
                 </p>
-            </section>
-
-            <!-- Challenges & Learnings -->
-            <section class="project-section">
-                <h2>Challenges & Learnings</h2>
-                <div class="highlight-box">
-                    <h3>Physical Build Constraints</h3>
-                    <p>
-                        While we were ambitious with our initial vision, budget limitations and time constraints prevented ordering 
-                        custom PCBs from China. This meant we couldn't integrate the entire system cleanly into the 3D-printed 
-                        gameboard pieces. The final product is messier and less refined than originally envisioned, with exposed 
-                        wiring and components that couldn't be neatly housed within the hexagon tiles.
-                    </p>
-                </div>
-                <div class="highlight-box">
-                    <h3>Threading & Stability</h3>
-                    <p>
-                        MicroPython threading remains a careful balancing act, requiring strict separation of concerns between the
-                        I/O thread and the main event loop. The solution—server on main thread, NFC on worker thread—proved critical
-                        for reliable client connections.
-                    </p>
-                </div>
-                <div class="highlight-box">
-                    <h3>NFC Precision</h3>
-                    <p>
-                        NFC read zones are intentionally tight, requiring precise figurine placement. The inverted RC522-mini design 
-                        and cap layout mitigate this, but it remains a learned behavior for users.
-                    </p>
-                </div>
-                <div class="highlight-box">
-                    <h3>Scaling Considerations</h3>
-                    <p>
-                        While the seven-tile module scales conceptually, expanding to many modules complicates power distribution 
-                        and wiring, suggesting future architectural refinements will be needed.
-                    </p>
-                </div>
-            </section>
-
-            <!-- Impact -->
-            <section class="project-section">
-                <h2>Impact</h2>
-                <p class="project-text">
-                    The project delivers a durable, offline, and extensible play surface that keeps the "feel" of tabletop gaming 
-                    while adding shared state, visual clarity, and progression mechanics—no accounts, no servers required. It 
-                    showcases end-to-end engineering: embedded firmware, mobile UI, NFC/RFID integration, power and signal planning, 
-                    and 3D fabrication.
-                </p>
-            </section>
-
-            <!-- Future Enhancements -->
-            <section class="project-section">
-                <h2>Future Enhancements</h2>
-                <ul class="feature-list">
-                    <li>
-                        <strong>Rules-Agnostic Engine:</strong> Allow different game systems to plug in their mechanics for broader compatibility
-                    </li>
-                    <li>
-                        <strong>Auto-Discovery:</strong> Enable multi-module boards to automatically detect and configure connected tiles
-                    </li>
-                    <li>
-                        <strong>Real-Time Core Optimization:</strong> Selective C/C++ components for lower latency as the grid scales
-                    </li>
-                    <li>
-                        <strong>Improved Placement UX:</strong> Enhanced figurine detection and user feedback for more intuitive interaction
-                    </li>
-                    <li>
-                        <strong>Power Architecture:</strong> Better power distribution and communication infrastructure for multi-module setups
-                    </li>
-                </ul>
             </section>
 
             <!-- Call to Action -->
