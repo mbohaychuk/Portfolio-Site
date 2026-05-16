@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarBuyerAssistant - Portfolio</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <h1 class="logo"><a href="../index.html">Portfolio</a></h1>
+                <a href="../index.html" class="back-link">← Back to Projects</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="project-detail">
+        <div class="container">
+            <div class="project-header">
+                <h1 class="project-detail-title">CarBuyerAssistant</h1>
+                <p class="project-detail-subtitle">A 10-process pipeline that finds vehicle deals at Western Canadian auctions</p>
+            </div>
+
+            <section class="project-section">
+                <h2>Overview</h2>
+                <p class="project-text">
+                    The actual deals on used vehicles in Western Canada are at small farm and estate auctions. Kijiji's deal density collapsed years ago, AutoTrader is dealer markup at retail, and Facebook Marketplace is hostile to scraping. Farm dispersal sales and provincial heavy-equipment auctioneers are where late-model trucks still cross the block at a third of retail — but their catalogs are spread across a dozen sites with no API, soft-close timers, and listings that vanish the moment the hammer drops.
+                </p>
+                <p class="project-text">
+                    CarBuyerAssistant is the consolidator those auctioneers will never build. It ingests lots from HiBid (the largest Western Canadian source), enriches each one with an LLM, watches bid trajectories through the soft-close period, and pushes two kinds of Discord alerts: <em>"rare vehicle, you've got days to drive out and look"</em> and <em>"this lot is closing cheap right now."</em> I run it on a Linux box at home; it's been my actual deal-finder for months.
+                </p>
+            </section>
+
+            <section class="project-section">
+                <h2>Technology Stack</h2>
+                <div class="tech-grid">
+                    <div class="tech-item">
+                        <h3>Workers &amp; Runtime</h3>
+                        <ul>
+                            <li>Python 3.13, asyncio</li>
+                            <li>SQLAlchemy 2 (async) + Alembic</li>
+                            <li>psycopg3 (LISTEN/NOTIFY)</li>
+                            <li>systemd (10 units, timers + continuous)</li>
+                        </ul>
+                    </div>
+                    <div class="tech-item">
+                        <h3>Data &amp; Ingestion</h3>
+                        <ul>
+                            <li>PostgreSQL 17 (queue + state)</li>
+                            <li>httpx (HiBid GraphQL ingest)</li>
+                            <li>OpenAI GPT-4.1 mini + GPT-4o vision</li>
+                            <li>pg_dump backups, 30-day retention</li>
+                        </ul>
+                    </div>
+                    <div class="tech-item">
+                        <h3>Surfaces</h3>
+                        <ul>
+                            <li>FastAPI + HTMX dashboard</li>
+                            <li>discord.py bot (slash commands)</li>
+                            <li>SELinux-aware systemd install</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="project-section">
+                <h2>Architecture &amp; Design Choices</h2>
+                <div class="highlight-box">
+                    <p>
+                        Ten processes, all sharing one Postgres. An ingester pulls lots from HiBid's GraphQL endpoint on a 6-hour timer; an enricher describes them with an LLM; a valuator computes fair-value ranges against a growing comp database; a notifier fires Discord embeds; a bid_poller watches active lots; nightly timers run a vision pass on the price shortlist and distill closed lots into historical sales. Each stage NOTIFY/LISTEN-signals the next. Failure of any worker doesn't cascade because Postgres holds the queue state.
+                    </p>
+                    <p>
+                        Redis or RabbitMQ would have been the textbook queue choice. Both add a moving part to operate, monitor, and back up. Postgres NOTIFY hands all of that to the database I'm already running, and <code>SELECT ... FOR UPDATE SKIP LOCKED</code> makes claim/process/commit safe under concurrent consumers. The cost is that NOTIFY payloads are limited to ~8KB, so the messages only carry row IDs — claiming requires a follow-up query. For a system whose queue depth never exceeds a few hundred, that's a no-brainer trade.
+                    </p>
+                </div>
+                <div class="highlight-box">
+                    <p>
+                        Each continuous worker opens a dedicated psycopg connection at startup and runs <code>pg_try_advisory_lock(hashtext("notifier"))</code>. The lock is held for the process lifetime; closing the connection releases it. If a second instance starts — typically because I ran a worker from a shell while systemd was also alive — it exits non-zero. systemd's <code>Restart=always</code> cycles it; if the real peer is still alive, the next retry also fails. That's the desired symptom: a noisy loop, not a corrupted database.
+                    </p>
+                    <p>
+                        Without this guard, the <code>SKIP LOCKED</code> claim plus the orphan-recovery sweep both assume no concurrent claimer exists. Duplicates would mean duplicate Discord posts and double-charged LLM calls.
+                    </p>
+                </div>
+                <div class="highlight-box">
+                    <p>
+                        HiBid migrated its catalog to a SPA in early 2026. The province auction-list page is still server-rendered, so discovery still scrapes <code>&lt;a href&gt;</code> patterns. But the individual auction pages are empty shells — lot data arrives via GraphQL POSTs to <code>/graphql</code>. The ingester rebuilds those queries directly, riding a Cloudflare-issued <code>__cf_bm</code> cookie bootstrapped on first contact. The alternative would have been driving the SPA with Playwright; the GraphQL contract changes less often than the HTML rendering does, and it's an order of magnitude faster.
+                    </p>
+                </div>
+                <div class="highlight-box">
+                    <p>
+                        HiBid auctions soft-close: a bid in the last 60 seconds extends the lot. Polling at a fixed cadence either burns requests on lots that aren't close to closing or misses the action when one is. The bid_poller keeps a priority queue keyed on next-poll-time, tiered from 60 minutes when a lot is days away down to 30 seconds inside the soft-close window. Polling continues past the nominal end time until the source reports the lot closed — that's how the system reconstructs final sale prices, which then feed the next valuation pass.
+                    </p>
+                </div>
+                <div class="highlight-box">
+                    <p>
+                        The install script copies systemd units into <code>/etc/systemd/system</code> rather than symlinking, then <code>restorecon</code>s the repo to <code>bin_t</code>. Symlinked units on a Fedora host pick up <code>user_home_t</code> and systemd refuses to start them; copying + relabel is the only path that works without disabling SELinux. Every worker unit also ships with the hardening baseline — <code>NoNewPrivileges</code>, <code>ProtectSystem=strict</code>, <code>ProtectHome=read-only</code>, <code>PrivateTmp</code>, <code>RestrictAddressFamilies</code>, <code>MemoryDenyWriteExecute</code>. Process compromise inside any worker still can't write outside the repo path.
+                    </p>
+                </div>
+            </section>
+
+            <section class="project-section">
+                <h2>What Works Today</h2>
+                <p class="project-text">
+                    All ten processes run continuously on my home Linux box. HiBid ingest fires every six hours, the worker chain enriches and values each lot end-to-end, the bid_poller tracks live auctions through soft-close, and Discord alerts fire on the two trigger types. The dashboard shows the open feed with side-by-side comps from <code>historical_sales</code>, and slash commands on the Discord bot let me flag, watch, or dismiss lots from my phone. The comp database grew from zero to thousands of observed sales by simply letting the system run.
+                </p>
+                <p class="project-text">
+                    The Ritchie Bros and Michener Allen source plugins are deferred to phase 2 — those auctioneers are big enough that manual browsing isn't a hardship. Single-user only; this isn't trying to be a service.
+                </p>
+            </section>
+
+            <div class="project-cta">
+                <a href="https://github.com/mbohaychuk/CarBuyerAssistant" class="btn btn-secondary" target="_blank" style="margin-right: 1rem;">View on GitHub</a>
+                <a href="../index.html" class="btn btn-primary">View More Projects</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+</body>
+</html>
