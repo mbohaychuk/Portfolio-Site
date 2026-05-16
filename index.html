@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio - Software Developer</title>
+    <title>Mark Bohaychuk</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <header class="header">
         <div class="container">
             <nav class="nav">
-                <h1 class="logo">My Portfolio</h1>
+                <h1 class="logo">Mark Bohaychuk</h1>
                 <ul class="nav-links">
                     <li><a href="#home">Home</a></li>
                     <li><a href="#projects">Projects</a></li>
@@ -25,8 +25,8 @@
         <section id="home" class="hero">
             <div class="container">
                 <div class="hero-content">
-                    <h2 class="hero-title">Software Developer</h2>
-                    <p class="hero-subtitle">Building innovative solutions with clean architecture and modern technologies</p>
+                    <h2 class="hero-title">Mark Bohaychuk</h2>
+                    <p class="hero-subtitle">I build software. Distributed systems, ML pipelines, embedded firmware — usually because I wanted the thing to exist.</p>
                     <a href="#projects" class="btn btn-primary">View My Work</a>
                 </div>
             </div>
@@ -114,6 +114,34 @@
                         </div>
                     </article>
 
+                    <!-- Project: CarBuyerAssistant -->
+                    <article class="project-card" data-project="carbuyer">
+                        <div class="project-image">
+                            <div class="project-placeholder">
+                                <svg class="project-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <rect x="1" y="3" width="15" height="13" rx="1"/>
+                                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+                                    <circle cx="5.5" cy="18.5" r="2.5"/>
+                                    <circle cx="18.5" cy="18.5" r="2.5"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="project-content">
+                            <h3 class="project-title">CarBuyerAssistant</h3>
+                            <p class="project-description">
+                                A 10-process pipeline that hunts vehicle deals at Western Canadian auctions. Postgres NOTIFY/LISTEN queue, advisory-lock single-instance enforcement, GraphQL ingest behind Cloudflare, Discord alerts on soft-close.
+                            </p>
+                            <div class="project-tags">
+                                <span class="tag">Python</span>
+                                <span class="tag">PostgreSQL</span>
+                                <span class="tag">asyncio</span>
+                                <span class="tag">systemd</span>
+                                <span class="tag">LLM</span>
+                            </div>
+                            <a href="projects/carbuyer.html" class="btn btn-secondary">Learn More</a>
+                        </div>
+                    </article>
+
                     <!-- Project: Interactive Gameboard -->
                     <article class="project-card" data-project="gameboard">
                         <div class="project-image">
@@ -175,8 +203,8 @@
         <!-- Contact Section -->
         <section id="contact" class="contact">
             <div class="container">
-                <h2 class="section-title">Get In Touch</h2>
-                <p class="contact-text">Interested in working together? Let's connect!</p>
+                <h2 class="section-title">Contact</h2>
+                <p class="contact-text">Email is best.</p>
                 <div class="contact-links">
                     <a href="mailto:mark@bohaychuk.com" class="contact-link">Email</a>
                     <a href="https://github.com/mbohaychuk" class="contact-link" target="_blank">GitHub</a>
