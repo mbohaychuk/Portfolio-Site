@@ -85,10 +85,18 @@
             <section class="project-section">
                 <h2>Project Media</h2>
                 <div class="media-grid">
-                    <div class="media-item placeholder">
-                        <p>Ranked job list with explanation panel — coming soon</p>
+                    <div class="media-item">
+                        <img src="../images/job-search-copilot/api-overview.png"
+                             alt="FastAPI auto-generated documentation for Job Search Copilot, showing the system, candidates, jobs, and matches endpoint groups"
+                             loading="lazy">
+                    </div>
+                    <div class="media-item">
+                        <img src="../images/job-search-copilot/api-search-endpoint.png"
+                             alt="The /api/v1/search endpoint: query parameters and an example response showing each job with a match_score and a match_explanation containing the overall score, grade, summary, and per-component breakdown"
+                             loading="lazy">
                     </div>
                 </div>
+                <p class="media-note"><em>Job Search Copilot is an API-first backend. The ranked-results UI is a planned module; today the matcher is exercised through its REST API — above, the live FastAPI docs and the <code>/search</code> endpoint whose response carries the per-job <code>match_explanation</code>.</em></p>
             </section>
 
             <section class="project-section">
