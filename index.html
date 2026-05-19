@@ -13,6 +13,7 @@
                 <h1 class="logo">Mark Bohaychuk</h1>
                 <ul class="nav-links">
                     <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About</a></li>
                     <li><a href="#projects">Projects</a></li>
                     <li><a href="#contact">Contact</a></li>
                 </ul>
@@ -32,11 +33,56 @@
             </div>
         </section>
 
+        <!-- About Section -->
+        <section id="about" class="about">
+            <div class="container">
+                <h2 class="section-title">About</h2>
+                <div class="about-content">
+                    <p class="about-text">
+                        I'm a software developer based in Alberta, Canada. I work across the stack &mdash; distributed backends, machine-learning and retrieval pipelines, and bare-metal embedded firmware &mdash; and I'm happiest on problems that cross those boundaries.
+                    </p>
+                    <p class="about-text">
+                        The projects below are all things I wanted to exist and then built end to end: ASP.NET Core and Python services, local and hosted LLM pipelines, a ten-process auction-hunting system, embedded C on an 8-bit microcontroller. The throughline is systems that are honest about their own limits &mdash; explicit pipeline stages, visible failure modes, and design decisions I made for reasons I can explain.
+                    </p>
+                    <!-- TODO (Mark): add a resume PDF link here, e.g. <a href="resume.pdf" class="btn btn-secondary">Download Resume</a> -->
+                    <p class="about-status">Open to new opportunities &mdash; email is the best way to reach me.</p>
+                </div>
+            </div>
+        </section>
+
         <!-- Projects Section -->
         <section id="projects" class="projects">
             <div class="container">
                 <h2 class="section-title">Featured Projects</h2>
                 <div class="projects-grid">
+                    <!-- Project: CarBuyerAssistant -->
+                    <article class="project-card" data-project="carbuyer">
+                        <div class="project-image">
+                            <div class="project-placeholder">
+                                <svg class="project-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <rect x="1" y="3" width="15" height="13" rx="1"/>
+                                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+                                    <circle cx="5.5" cy="18.5" r="2.5"/>
+                                    <circle cx="18.5" cy="18.5" r="2.5"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="project-content">
+                            <h3 class="project-title">CarBuyerAssistant</h3>
+                            <p class="project-description">
+                                A 10-process pipeline that hunts vehicle deals at Western Canadian auctions. Postgres NOTIFY/LISTEN queue, advisory-lock single-instance enforcement, GraphQL ingest behind Cloudflare, Discord alerts on soft-close.
+                            </p>
+                            <div class="project-tags">
+                                <span class="tag">Python</span>
+                                <span class="tag">PostgreSQL</span>
+                                <span class="tag">asyncio</span>
+                                <span class="tag">systemd</span>
+                                <span class="tag">LLM</span>
+                            </div>
+                            <a href="projects/carbuyer.html" class="btn btn-secondary">Learn More</a>
+                        </div>
+                    </article>
+
                     <!-- Project: Briefer -->
                     <article class="project-card" data-project="briefer">
                         <div class="project-image">
@@ -114,34 +160,6 @@
                         </div>
                     </article>
 
-                    <!-- Project: CarBuyerAssistant -->
-                    <article class="project-card" data-project="carbuyer">
-                        <div class="project-image">
-                            <div class="project-placeholder">
-                                <svg class="project-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                    <rect x="1" y="3" width="15" height="13" rx="1"/>
-                                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
-                                    <circle cx="5.5" cy="18.5" r="2.5"/>
-                                    <circle cx="18.5" cy="18.5" r="2.5"/>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="project-content">
-                            <h3 class="project-title">CarBuyerAssistant</h3>
-                            <p class="project-description">
-                                A 10-process pipeline that hunts vehicle deals at Western Canadian auctions. Postgres NOTIFY/LISTEN queue, advisory-lock single-instance enforcement, GraphQL ingest behind Cloudflare, Discord alerts on soft-close.
-                            </p>
-                            <div class="project-tags">
-                                <span class="tag">Python</span>
-                                <span class="tag">PostgreSQL</span>
-                                <span class="tag">asyncio</span>
-                                <span class="tag">systemd</span>
-                                <span class="tag">LLM</span>
-                            </div>
-                            <a href="projects/carbuyer.html" class="btn btn-secondary">Learn More</a>
-                        </div>
-                    </article>
-
                     <!-- Project: Interactive Gameboard -->
                     <article class="project-card" data-project="gameboard">
                         <div class="project-image">
@@ -216,7 +234,7 @@
 
     <footer class="footer">
         <div class="container">
-
+            <p>&copy; 2026 Mark Bohaychuk &middot; Built from scratch &mdash; no framework, no build step.</p>
         </div>
     </footer>
 

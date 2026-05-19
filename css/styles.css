@@ -510,6 +510,33 @@ a:hover {
 }
 
 /* ===========================
+   About Section
+   =========================== */
+.about {
+    padding: var(--spacing-2xl) 0;
+    background-color: var(--bg-secondary);
+}
+
+.about-content {
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.about-text {
+    font-size: 1.15rem;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-md);
+}
+
+.about-status {
+    text-align: center;
+    margin-top: var(--spacing-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* ===========================
    Contact Section
    =========================== */
 .contact {
