@@ -536,6 +536,11 @@ a:hover {
     color: var(--text-primary);
 }
 
+.about-cta {
+    text-align: center;
+    margin-top: var(--spacing-lg);
+}
+
 /* ===========================
    Contact Section
    =========================== */
