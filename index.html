@@ -3,15 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mark Bohaychuk</title>
+    <title>Mark Bohaychuk — Software Developer</title>
+    <meta name="description" content="Mark Bohaychuk — software developer in Alberta, Canada. Distributed systems, ML and retrieval pipelines, and embedded firmware, built end to end.">
+    <meta name="author" content="Mark Bohaychuk">
+    <meta name="theme-color" content="#2e5d4f">
+    <link rel="canonical" href="https://mark.bohaychuk.com/">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://mark.bohaychuk.com/">
+    <meta property="og:title" content="Mark Bohaychuk — Software Developer">
+    <meta property="og:description" content="Distributed systems, ML and retrieval pipelines, and embedded firmware — built end to end.">
+    <meta property="og:image" content="https://mark.bohaychuk.com/images/og-card.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Mark Bohaychuk — Software Developer">
+    <meta name="twitter:description" content="Distributed systems, ML and retrieval pipelines, and embedded firmware — built end to end.">
+    <meta name="twitter:image" content="https://mark.bohaychuk.com/images/og-card.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+    <a href="#projects" class="skip-link">Skip to projects</a>
+
     <header class="header">
         <div class="container">
-            <nav class="nav">
-                <h1 class="logo">Mark Bohaychuk</h1>
-                <ul class="nav-links">
+            <nav class="nav" aria-label="Primary">
+                <span class="logo"><a href="#home">Mark Bohaychuk</a></span>
+                <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <line x1="3" y1="6" x2="21" y2="6"/>
+                        <line x1="3" y1="12" x2="21" y2="12"/>
+                        <line x1="3" y1="18" x2="21" y2="18"/>
+                    </svg>
+                </button>
+                <ul class="nav-links" id="nav-links">
                     <li><a href="#home">Home</a></li>
                     <li><a href="#about">About</a></li>
                     <li><a href="#projects">Projects</a></li>
@@ -21,23 +49,28 @@
         </div>
     </header>
 
-    <main>
-        <!-- Hero Section -->
+    <main id="main">
+        <!-- Hero -->
         <section id="home" class="hero">
             <div class="container">
                 <div class="hero-content">
-                    <h2 class="hero-title">Mark Bohaychuk</h2>
+                    <p class="eyebrow">Software developer · Alberta, Canada</p>
+                    <h1 class="hero-title">Mark Bohaychuk</h1>
                     <p class="hero-subtitle">I build software. Distributed systems, ML pipelines, embedded firmware — usually because I wanted the thing to exist.</p>
-                    <a href="#projects" class="btn btn-primary">View My Work</a>
+                    <div class="hero-actions">
+                        <a href="#projects" class="btn btn-primary">View my work</a>
+                        <a href="#contact" class="text-link">Get in touch →</a>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- About Section -->
+        <!-- About -->
         <section id="about" class="about">
             <div class="container">
-                <h2 class="section-title">About</h2>
-                <div class="about-content">
+                <div class="about-content reveal">
+                    <p class="eyebrow">01 / About</p>
+                    <h2 class="section-title">About</h2>
                     <p class="about-text">
                         I'm a software developer based in Alberta, Canada. I work across the stack &mdash; distributed backends, machine-learning and retrieval pipelines, and bare-metal embedded firmware &mdash; and I'm happiest on problems that cross those boundaries.
                     </p>
@@ -46,27 +79,31 @@
                     </p>
                     <p class="about-status">Open to new opportunities &mdash; email is the best way to reach me.</p>
                     <div class="about-cta">
-                        <a href="docs/Mark_Bohaychuk_Resume.pdf" class="btn btn-secondary" target="_blank">Download Résumé</a>
+                        <a href="docs/Mark_Bohaychuk_Resume.pdf" class="btn btn-secondary" target="_blank" rel="noopener">Download résumé</a>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Projects Section -->
+        <!-- Projects -->
         <section id="projects" class="projects">
             <div class="container">
-                <h2 class="section-title">Featured Projects</h2>
+                <div class="section-head reveal">
+                    <p class="eyebrow">02 / Selected work</p>
+                    <h2 class="section-title">Selected work</h2>
+                </div>
                 <div class="projects-grid">
-                    <!-- Project: CarBuyerAssistant -->
-                    <article class="project-card" data-project="carbuyer">
-                        <div class="project-image">
-                            <div class="project-placeholder">
-                                <svg class="project-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <!-- CarBuyerAssistant -->
+                    <article class="project-card reveal" data-project="carbuyer">
+                        <div class="project-media">
+                            <div class="project-tile">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
                                     <rect x="1" y="3" width="15" height="13" rx="1"/>
                                     <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
                                     <circle cx="5.5" cy="18.5" r="2.5"/>
                                     <circle cx="18.5" cy="18.5" r="2.5"/>
                                 </svg>
+                                <span>Backend · Python</span>
                             </div>
                         </div>
                         <div class="project-content">
@@ -81,21 +118,14 @@
                                 <span class="tag">systemd</span>
                                 <span class="tag">LLM</span>
                             </div>
-                            <a href="projects/carbuyer.html" class="btn btn-secondary">Learn More</a>
+                            <a href="projects/carbuyer.html" class="project-link">Read more <span class="arrow" aria-hidden="true">→</span></a>
                         </div>
                     </article>
 
-                    <!-- Project: Briefer -->
-                    <article class="project-card" data-project="briefer">
-                        <div class="project-image">
-                            <div class="project-placeholder">
-                                <svg class="project-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                    <rect x="4" y="4" width="16" height="16" rx="2"/>
-                                    <line x1="8" y1="9" x2="16" y2="9"/>
-                                    <line x1="8" y1="13" x2="16" y2="13"/>
-                                    <line x1="8" y1="17" x2="12" y2="17"/>
-                                </svg>
-                            </div>
+                    <!-- Briefer -->
+                    <article class="project-card reveal" data-project="briefer">
+                        <div class="project-media">
+                            <img class="project-shot" src="images/briefer/profile-editor.png" alt="Briefer interest-profile editor describing monitored topics in natural language" loading="lazy" decoding="async">
                         </div>
                         <div class="project-content">
                             <h3 class="project-title">Briefer</h3>
@@ -109,19 +139,14 @@
                                 <span class="tag">Qdrant</span>
                                 <span class="tag">LLM</span>
                             </div>
-                            <a href="projects/briefer.html" class="btn btn-secondary">Learn More</a>
+                            <a href="projects/briefer.html" class="project-link">Read more <span class="arrow" aria-hidden="true">→</span></a>
                         </div>
                     </article>
 
-                    <!-- Project: Job Search Copilot -->
-                    <article class="project-card" data-project="job-search-copilot">
-                        <div class="project-image">
-                            <div class="project-placeholder">
-                                <svg class="project-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                    <circle cx="11" cy="11" r="8"/>
-                                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                                </svg>
-                            </div>
+                    <!-- Job Search Copilot -->
+                    <article class="project-card reveal" data-project="job-search-copilot">
+                        <div class="project-media">
+                            <img class="project-shot" src="images/job-search-copilot/api-overview.png" alt="Job Search Copilot API documentation overview" loading="lazy" decoding="async">
                         </div>
                         <div class="project-content">
                             <h3 class="project-title">Job Search Copilot</h3>
@@ -134,18 +159,14 @@
                                 <span class="tag">pgvector</span>
                                 <span class="tag">OpenAI</span>
                             </div>
-                            <a href="projects/job-search-copilot.html" class="btn btn-secondary">Learn More</a>
+                            <a href="projects/job-search-copilot.html" class="project-link">Read more <span class="arrow" aria-hidden="true">→</span></a>
                         </div>
                     </article>
 
-                    <!-- Project: Mechanics Sidekick -->
-                    <article class="project-card" data-project="mechanics-sidekick">
-                        <div class="project-image">
-                            <div class="project-placeholder">
-                                <svg class="project-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
-                                </svg>
-                            </div>
+                    <!-- Mechanics Sidekick -->
+                    <article class="project-card reveal" data-project="mechanics-sidekick">
+                        <div class="project-media">
+                            <img class="project-shot" src="images/mechanics-sidekick/terminal-session.png" alt="Mechanics Sidekick terminal session answering a question with cited sources" loading="lazy" decoding="async">
                         </div>
                         <div class="project-content">
                             <h3 class="project-title">Mechanics Sidekick</h3>
@@ -158,25 +179,19 @@
                                 <span class="tag">RAG</span>
                                 <span class="tag">SQLite</span>
                             </div>
-                            <a href="projects/mechanics-sidekick.html" class="btn btn-secondary">Learn More</a>
+                            <a href="projects/mechanics-sidekick.html" class="project-link">Read more <span class="arrow" aria-hidden="true">→</span></a>
                         </div>
                     </article>
 
-                    <!-- Project: Interactive Gameboard -->
-                    <article class="project-card" data-project="gameboard">
-                        <div class="project-image">
-                            <div class="project-placeholder">
-                                <svg class="project-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                    <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-                                    <path d="M2 17l10 5 10-5"/>
-                                    <path d="M2 12l10 5 10-5"/>
-                                </svg>
-                            </div>
+                    <!-- Interactive Gameboard -->
+                    <article class="project-card reveal" data-project="gameboard">
+                        <div class="project-media">
+                            <img class="project-shot project-shot--center" src="images/gameboard/gameboard.jpg" alt="Hexagon-tiled gameboard with NFC readers and RGB LEDs" loading="lazy" decoding="async">
                         </div>
                         <div class="project-content">
                             <h3 class="project-title">Interactive Gameboard</h3>
                             <p class="project-description">
-                                An innovative hexagon-based gameboard with NFC readers and RGB LEDs, controlled by Raspberry Pi Pico W with real-time mobile app integration.
+                                A hexagon-based gameboard with NFC readers and RGB LEDs, driven by a Raspberry Pi Pico W with real-time mobile-app integration.
                             </p>
                             <div class="project-tags">
                                 <span class="tag">Raspberry Pi</span>
@@ -184,15 +199,15 @@
                                 <span class="tag">.NET MAUI</span>
                                 <span class="tag">IoT</span>
                             </div>
-                            <a href="projects/gameboard.html" class="btn btn-secondary">Learn More</a>
+                            <a href="projects/gameboard.html" class="project-link">Read more <span class="arrow" aria-hidden="true">→</span></a>
                         </div>
                     </article>
 
-                    <!-- Project: Digital Level -->
-                    <article class="project-card" data-project="digital-level">
-                        <div class="project-image">
-                            <div class="project-placeholder">
-                                <svg class="project-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <!-- Digital Level -->
+                    <article class="project-card reveal" data-project="digital-level">
+                        <div class="project-media">
+                            <div class="project-tile">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
                                     <circle cx="12" cy="12" r="10"/>
                                     <circle cx="12" cy="12" r="3"/>
                                     <line x1="12" y1="2" x2="12" y2="5"/>
@@ -200,6 +215,7 @@
                                     <line x1="2" y1="12" x2="5" y2="12"/>
                                     <line x1="19" y1="12" x2="22" y2="12"/>
                                 </svg>
+                                <span>Embedded · C</span>
                             </div>
                         </div>
                         <div class="project-content">
@@ -213,22 +229,25 @@
                                 <span class="tag">PCB Design</span>
                                 <span class="tag">I²C</span>
                             </div>
-                            <a href="projects/digital-level.html" class="btn btn-secondary">Learn More</a>
+                            <a href="projects/digital-level.html" class="project-link">Read more <span class="arrow" aria-hidden="true">→</span></a>
                         </div>
                     </article>
                 </div>
             </div>
         </section>
 
-        <!-- Contact Section -->
+        <!-- Contact -->
         <section id="contact" class="contact">
             <div class="container">
-                <h2 class="section-title">Contact</h2>
-                <p class="contact-text">Email is best.</p>
-                <div class="contact-links">
-                    <a href="mailto:mark@bohaychuk.com" class="contact-link">Email</a>
-                    <a href="https://github.com/mbohaychuk" class="contact-link" target="_blank">GitHub</a>
-                    <a href="https://www.linkedin.com/in/mark-bohaychuk-a47a1b263" class="contact-link" target="_blank">LinkedIn</a>
+                <div class="reveal">
+                    <p class="eyebrow">03 / Contact</p>
+                    <h2 class="section-title">Get in touch</h2>
+                    <p class="contact-text">Open to new opportunities. Email is the best way to reach me — I read everything.</p>
+                    <div class="contact-links">
+                        <a href="mailto:mark@bohaychuk.com" class="contact-link">mark@bohaychuk.com</a>
+                        <a href="https://github.com/mbohaychuk" class="contact-link" target="_blank" rel="noopener">GitHub</a>
+                        <a href="https://www.linkedin.com/in/mark-bohaychuk-a47a1b263" class="contact-link" target="_blank" rel="noopener">LinkedIn</a>
+                    </div>
                 </div>
             </div>
         </section>
@@ -236,7 +255,8 @@
 
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2026 Mark Bohaychuk &middot; Built from scratch &mdash; no framework, no build step.</p>
+            <p>&copy; 2026 Mark Bohaychuk</p>
+            <p>Built from scratch — no framework, no build step.</p>
         </div>
     </footer>
 

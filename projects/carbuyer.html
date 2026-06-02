@@ -3,15 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CarBuyerAssistant - Portfolio</title>
+    <title>CarBuyerAssistant — Mark Bohaychuk</title>
+    <meta name="description" content="A 10-process pipeline that hunts vehicle deals at Western Canadian auctions — Postgres NOTIFY/LISTEN queue, LLM lot scoring, and Discord alerts on soft-close.">
+    <meta name="author" content="Mark Bohaychuk">
+    <meta name="theme-color" content="#2e5d4f">
+    <link rel="canonical" href="https://mark.bohaychuk.com/projects/carbuyer.html">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://mark.bohaychuk.com/projects/carbuyer.html">
+    <meta property="og:title" content="CarBuyerAssistant — Mark Bohaychuk">
+    <meta property="og:description" content="A 10-process pipeline that hunts vehicle deals at Western Canadian auctions — Postgres NOTIFY/LISTEN queue, LLM lot scoring, and Discord alerts on soft-close.">
+    <meta property="og:image" content="https://mark.bohaychuk.com/images/og-card.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="CarBuyerAssistant — Mark Bohaychuk">
+    <meta name="twitter:description" content="A 10-process pipeline that hunts vehicle deals at Western Canadian auctions.">
+    <meta name="twitter:image" content="https://mark.bohaychuk.com/images/og-card.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
     <header class="header">
         <div class="container">
-            <nav class="nav">
-                <h1 class="logo"><a href="../index.html">Portfolio</a></h1>
-                <a href="../index.html" class="back-link">← Back to Projects</a>
+            <nav class="nav" aria-label="Primary">
+                <span class="logo"><a href="../index.html">Mark Bohaychuk</a></span>
+                <a href="../index.html" class="back-link">← Back to projects</a>
             </nav>
         </div>
     </header>
@@ -19,8 +38,9 @@
     <main class="project-detail">
         <div class="container">
             <div class="project-header">
+                <p class="eyebrow">Backend · Python</p>
                 <h1 class="project-detail-title">CarBuyerAssistant</h1>
-                <p class="project-detail-subtitle">A 10-process pipeline that finds vehicle deals at Western Canadian auctions</p>
+                <p class="project-detail-subtitle">A 10-process pipeline that hunts vehicle deals at Western Canadian auctions</p>
             </div>
 
             <section class="project-section">
@@ -101,18 +121,6 @@
             </section>
 
             <section class="project-section">
-                <h2>Project Media</h2>
-                <div class="media-grid">
-                    <div class="media-item placeholder">
-                        <p>Dashboard feed view — coming soon</p>
-                    </div>
-                    <div class="media-item placeholder">
-                        <p>Example Discord "going cheap" alert — coming soon</p>
-                    </div>
-                </div>
-            </section>
-
-            <section class="project-section">
                 <h2>What Works Today</h2>
                 <p class="project-text">
                     All ten processes run continuously on my home Linux box. HiBid ingest fires every six hours, the worker chain enriches and values each lot end-to-end, the bid_poller tracks live auctions through soft-close, and Discord alerts fire on the two trigger types. The dashboard shows the open feed with side-by-side comps from <code>historical_sales</code>, and slash commands on the Discord bot let me flag, watch, or dismiss lots from my phone. The comp database grew from zero to thousands of observed sales by simply letting the system run.
@@ -123,15 +131,16 @@
             </section>
 
             <div class="project-cta">
-                <a href="https://github.com/mbohaychuk/CarBuyerAssistant" class="btn btn-secondary" target="_blank" style="margin-right: 1rem;">View on GitHub</a>
-                <a href="../index.html" class="btn btn-primary">View More Projects</a>
+                <a href="https://github.com/mbohaychuk/CarBuyerAssistant" class="btn btn-secondary" target="_blank" rel="noopener">View on GitHub</a>
+                <a href="../index.html" class="btn btn-primary">View more projects</a>
             </div>
         </div>
     </main>
 
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2026 Mark Bohaychuk &middot; <a href="../index.html">Back to portfolio</a></p>
+            <p>&copy; 2026 Mark Bohaychuk</p>
+            <p><a href="../index.html">Back to portfolio</a></p>
         </div>
     </footer>
 

@@ -5,11 +5,13 @@ Source for my personal portfolio. Vanilla HTML, CSS, and JS — no build step.
 ## Layout
 
 ```
-index.html           Landing page (hero, project grid, contact)
+index.html           Landing page (hero, about, project grid, contact)
 projects/*.html      One detail page per project
-css/styles.css       All styles
-js/main.js           Smooth scroll, scroll-triggered animations, active-nav
-images/              Per-project screenshots and media
+css/styles.css       All styles (design tokens in :root)
+js/main.js           Mobile nav, smooth scroll, scroll-reveal, active-nav
+images/              Per-project screenshots, og-card, media
+favicon.svg          Site icon
+deploy/publish.sh    FTP publish script (see Deployment)
 ```
 
 Each project card on `index.html` links to its detail page in `projects/`. Detail pages share the same stylesheet and a minimal back-to-index header.
@@ -27,7 +29,11 @@ A local server is recommended over `file://` so relative paths and any future fe
 
 ## Deployment
 
-Not currently deployed. Intended target is GitHub Pages or Netlify — push to a `gh-pages` branch / connect the repo and let it serve the root.
+The site is a static bundle (HTML/CSS/JS plus `images/` and `favicon.svg`), served at
+**[mark.bohaychuk.com](https://mark.bohaychuk.com)**. Deploying is a file copy: upload the
+repository root to the web host's document root. `deploy/publish.sh` does this over FTP —
+copy `deploy/.env.example` to `deploy/.env`, fill in the host credentials, and run it.
+There is no build step and no server-side code.
 
 ## Adding a project
 

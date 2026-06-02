@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Mark Bohaychuk">
+  <rect width="64" height="64" rx="14" fill="#2e5d4f"/>
+  <path d="M15 47 V19 L32 36 L49 19 V47" fill="none" stroke="#f3f4f1" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="51" cy="15" r="4.5" fill="#b97f22"/>
+</svg>

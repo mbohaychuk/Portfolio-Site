@@ -1,12 +1,6 @@
-# Local tooling
-.claude/
-CLAUDE.md
-AGENTS.md
-*.local.md
+# Editor / OS
 .vscode/
 .idea/
-
-# OS
 .DS_Store
 Thumbs.db
 desktop.ini
@@ -14,3 +8,6 @@ desktop.ini
 # Logs & temp
 *.log
 *.tmp
+
+# Deploy credentials
+deploy/.env
