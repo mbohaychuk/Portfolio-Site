@@ -62,6 +62,8 @@ mirror -R --delete --only-newer --verbose $DRY_RUN \
     --exclude-glob '*.local.md' \
     --exclude-glob 'verify-*.png' \
     --exclude-glob 'portfolio-*.png' \
+    --exclude-glob 'web.config' \
+    --exclude-glob 'web.*.config' \
     --exclude README.md \
     --exclude CLAUDE.md \
     --exclude AGENTS.md \
