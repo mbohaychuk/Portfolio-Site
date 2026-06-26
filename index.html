@@ -166,20 +166,40 @@
                     <!-- Mechanics Sidekick -->
                     <article class="project-card reveal" data-project="mechanics-sidekick">
                         <div class="project-media">
-                            <img class="project-shot" src="images/mechanics-sidekick/terminal-session.png" alt="Mechanics Sidekick terminal session answering a question with cited sources" loading="lazy" decoding="async">
+                            <img class="project-shot" src="images/mechanics-sidekick/chat-citations.jpg" alt="Mechanics Sidekick answering with trouble codes grounded in a service manual and a matching recall, citations inline" loading="lazy" decoding="async">
                         </div>
                         <div class="project-content">
                             <h3 class="project-title">Mechanics Sidekick</h3>
                             <p class="project-description">
-                                Local CLI RAG assistant for service manuals. Upload PDFs for a vehicle, open a job, and ask grounded questions. Answers come with citations and nothing leaves your machine.
+                                An agentic diagnostic assistant. Stream live OBD-II data from the car, then let an LLM pull trouble codes, ground them in service manuals, and surface recalls — chaining tools in one chat, every answer cited.
                             </p>
                             <div class="project-tags">
                                 <span class="tag">Python</span>
-                                <span class="tag">Ollama</span>
-                                <span class="tag">RAG</span>
-                                <span class="tag">SQLite</span>
+                                <span class="tag">Vue</span>
+                                <span class="tag">OpenAI</span>
+                                <span class="tag">MCP</span>
                             </div>
                             <a href="projects/mechanics-sidekick.html" class="project-link">Read more <span class="arrow" aria-hidden="true">→</span></a>
+                        </div>
+                    </article>
+
+                    <!-- OBD-II MCP Server -->
+                    <article class="project-card reveal" data-project="obd-ii-mcp-server">
+                        <div class="project-media">
+                            <img class="project-shot" src="images/obd-ii-mcp-server/live-telemetry.jpg" alt="Live OBD-II telemetry — RPM, coolant temp, engine load — streamed from a 2015 F-150 through the MCP server" loading="lazy" decoding="async">
+                        </div>
+                        <div class="project-content">
+                            <h3 class="project-title">OBD-II MCP Server</h3>
+                            <p class="project-description">
+                                An MCP server that exposes a car's live diagnostics to LLM agents as tools — sensor reads, trouble codes, freeze frame, emissions readiness, VIN decode, and NHTSA recalls — over an ELM327 adapter.
+                            </p>
+                            <div class="project-tags">
+                                <span class="tag">Python</span>
+                                <span class="tag">MCP</span>
+                                <span class="tag">FastMCP</span>
+                                <span class="tag">OBD-II</span>
+                            </div>
+                            <a href="projects/obd-ii-mcp-server.html" class="project-link">Read more <span class="arrow" aria-hidden="true">→</span></a>
                         </div>
                     </article>
 

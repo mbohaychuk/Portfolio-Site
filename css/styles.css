@@ -629,6 +629,14 @@ strong { font-weight: 600; }
     display: block;
 }
 
+.media-item video {
+    width: 100%;
+    height: auto;
+    display: block;
+    aspect-ratio: 16 / 9;
+    background-color: #0c0c0c;
+}
+
 .media-item:hover { transform: translateY(-3px); }
 
 .media-caption {

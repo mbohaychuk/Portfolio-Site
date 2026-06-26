@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OBD-II MCP Server — Mark Bohaychuk</title>
+    <meta name="description" content="An MCP server that exposes a car's live OBD-II diagnostics to LLM agents as tools — live sensor reads, trouble codes, freeze frame, emissions readiness, VIN decode, and NHTSA recalls — over an ELM327 adapter. Python, FastMCP, python-OBD.">
+    <meta name="author" content="Mark Bohaychuk">
+    <meta name="theme-color" content="#2e5d4f">
+    <link rel="canonical" href="https://mark.bohaychuk.com/projects/obd-ii-mcp-server.html">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://mark.bohaychuk.com/projects/obd-ii-mcp-server.html">
+    <meta property="og:title" content="OBD-II MCP Server — Mark Bohaychuk">
+    <meta property="og:description" content="An MCP server that exposes a car's live OBD-II diagnostics to LLM agents as tools, over an ELM327 adapter. Python, FastMCP, python-OBD.">
+    <meta property="og:image" content="https://mark.bohaychuk.com/images/obd-ii-mcp-server/live-telemetry.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="OBD-II MCP Server — Mark Bohaychuk">
+    <meta name="twitter:description" content="Exposes live vehicle diagnostics to LLM agents as MCP tools, over an ELM327 adapter.">
+    <meta name="twitter:image" content="https://mark.bohaychuk.com/images/obd-ii-mcp-server/live-telemetry.jpg">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <nav class="nav" aria-label="Primary">
+                <span class="logo"><a href="../index.html">Mark Bohaychuk</a></span>
+                <a href="../index.html" class="back-link">← Back to projects</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="project-detail">
+        <div class="container">
+            <div class="project-header">
+                <p class="eyebrow">MCP Server · OBD-II</p>
+                <h1 class="project-detail-title">OBD-II MCP Server</h1>
+                <p class="project-detail-subtitle">A car's live diagnostics, exposed to LLM agents as MCP tools</p>
+            </div>
+
+            <section class="project-section">
+                <h2>Overview</h2>
+                <p class="project-text">
+                    Every car built since the mid-90s has an OBD-II port that speaks a standard diagnostic protocol — engine RPM, coolant temperature, trouble codes, emissions readiness, the lot. Reading it normally means a handheld scanner or hand-rolled serial code. This is an MCP server that puts all of that behind a clean set of tools an LLM can call. Plug an inexpensive ELM327 adapter into the car, point an MCP client at the server, and the model can ask the vehicle questions directly: what's running hot, what codes are stored, what the freeze-frame looked like when a fault tripped, whether there's an open recall. It's the bridge between an agent and the actual hardware in the driveway.
+                </p>
+            </section>
+
+            <section class="project-section">
+                <h2>Demo</h2>
+                <div class="media-grid">
+                    <div class="media-item">
+                        <video class="lazy-video" controls preload="none" playsinline
+                               width="1280" height="720"
+                               data-poster="../images/obd-ii-mcp-server/live-telemetry.jpg"
+                               data-src="../images/mechanics-sidekick/demo.mp4">
+                            Your browser can't play embedded video.
+                            <a href="../images/mechanics-sidekick/demo.mp4">Download the demo (MP4)</a>.
+                        </video>
+                    </div>
+                </div>
+                <p class="media-note"><em>These tools, running on a real car. The live values streaming on the left — RPM, coolant temp, engine load — are this server reading a 2015 F-150 over an ELM327 adapter. When the agent in <a href="mechanics-sidekick.html">Mechanics Sidekick</a> pulls the trouble codes and freeze frame, those calls land here.</em></p>
+            </section>
+
+            <section class="project-section">
+                <h2>Technology Stack</h2>
+                <div class="tech-grid">
+                    <div class="tech-item">
+                        <h3>Server</h3>
+                        <ul>
+                            <li>Python 3.11+</li>
+                            <li>FastMCP</li>
+                            <li>stdio transport</li>
+                            <li>pytest (116 tests)</li>
+                        </ul>
+                    </div>
+                    <div class="tech-item">
+                        <h3>Vehicle I/O</h3>
+                        <ul>
+                            <li>python-OBD</li>
+                            <li>pyserial</li>
+                            <li>ELM327 adapter</li>
+                            <li>ELM327-emulator (CI)</li>
+                        </ul>
+                    </div>
+                    <div class="tech-item">
+                        <h3>Data &amp; Lookups</h3>
+                        <ul>
+                            <li>httpx</li>
+                            <li>NHTSA vPIC + recalls</li>
+                            <li>Wal33D DTC database</li>
+                            <li>OBDb signal sets</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="project-section">
+                <h2>The Tools It Exposes</h2>
+                <p class="project-text">
+                    Eleven tools, grouped by what they do. An MCP client sees all of them with typed schemas and one-line descriptions.
+                </p>
+                <div class="tech-grid">
+                    <div class="tech-item">
+                        <h3>Vehicle identity</h3>
+                        <ul>
+                            <li><code>get_vehicle_info</code> — VIN, protocol, voltage; VIN decoded to year/make/model via NHTSA</li>
+                            <li><code>list_supported_pids</code> — what the ECU advertises</li>
+                        </ul>
+                    </div>
+                    <div class="tech-item">
+                        <h3>Live data</h3>
+                        <ul>
+                            <li><code>read_live_data</code> — snapshot of requested PIDs (RPM, speed, temps…)</li>
+                            <li><code>record_session</code> — time-bounded PID timeseries, stored as an MCP resource</li>
+                            <li><code>read_freeze_frame</code> — sensor snapshot from when a code set</li>
+                        </ul>
+                    </div>
+                    <div class="tech-item">
+                        <h3>Health &amp; emissions</h3>
+                        <ul>
+                            <li><code>read_dtcs</code> — stored / pending codes, with manufacturer-specific decoding</li>
+                            <li><code>read_readiness_monitors</code> — emissions monitor status</li>
+                            <li><code>clear_dtcs</code> — clear codes (destructive; consent-gated)</li>
+                        </ul>
+                    </div>
+                    <div class="tech-item">
+                        <h3>Reference</h3>
+                        <ul>
+                            <li><code>lookup_recalls_and_complaints</code> — NHTSA recalls + complaints</li>
+                            <li><code>list_manufacturer_signals</code> — bundled Mode 22 signal catalogue</li>
+                            <li><code>ping</code> — health check</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="project-section">
+                <h2>Architecture &amp; Design Choices</h2>
+                <div class="highlight-box">
+                    <p>
+                        It speaks MCP over stdio, so any client launches it as a subprocess. The ELM327 handshake is slow, so a single connection is opened once in the server's lifespan and pooled for the life of the process rather than re-dialed per call. The same pyserial URL scheme covers a USB cable, a Bluetooth adapter, a WiFi ELM327 clone, or a simulator — which is how the 116-test suite runs in CI against Ircama's ELM327 emulator with no hardware attached.
+                    </p>
+                </div>
+                <div class="highlight-box">
+                    <p>
+                        OBD is flaky by nature, so errors split two ways. A dead adapter or a failed bus init is a real failure — that surfaces as a tool error. But a single PID the ECU doesn't support isn't a failure; partial results are the normal case. So per-PID outcomes like <code>NOT_SUPPORTED</code> or <code>NO_DATA</code> come back in-band as data, not exceptions. The model gets to see exactly what the car could and couldn't answer instead of the whole call blowing up.
+                    </p>
+                </div>
+                <div class="highlight-box">
+                    <p>
+                        Clearing trouble codes also wipes emissions readiness monitors and can mask a fault that's about to recur, so <code>clear_dtcs</code> is the one destructive tool — and it's gated behind MCP elicitation. The server asks the host to confirm with the user before it runs, and fails closed if the host doesn't support that handshake. <a href="mechanics-sidekick.html">Mechanics Sidekick</a>, the assistant that consumes this server, goes a step further and denylists the tool entirely, staying read-only against the car.
+                    </p>
+                </div>
+            </section>
+
+            <section class="project-section">
+                <h2>What Works Today</h2>
+                <p class="project-text">
+                    v0.1.0, 116 tests, CI green. Validated against the ELM327 simulator and confirmed on a real vehicle — a 2015 F-150. Live PID reads, trouble codes with manufacturer-specific decoding, freeze-frame data, emissions readiness, VIN decode through NHTSA, recall and complaint lookups, and time-bounded session recording all work end to end. Manufacturer Mode 22 signals currently ship as metadata (Ford Mustang and F-150). Licensed Apache-2.0.
+                </p>
+            </section>
+
+            <div class="project-cta">
+                <a href="https://github.com/mbohaychuk/OBD-II-MCP-Server" class="btn btn-secondary" target="_blank" rel="noopener">View on GitHub</a>
+                <a href="mechanics-sidekick.html" class="btn btn-secondary">The assistant that uses it →</a>
+                <a href="../index.html" class="btn btn-primary">View more projects</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Mark Bohaychuk</p>
+            <p><a href="../index.html">Back to portfolio</a></p>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+</body>
+</html>

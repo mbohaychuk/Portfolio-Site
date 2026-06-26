@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     initMobileNav();
     initSmoothScrolling();
     initScrollReveal();
+    initLazyVideo();
     initActiveNavigation();
 });
 
@@ -74,6 +75,35 @@ function initScrollReveal() {
     }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 
     revealEls.forEach(function (el) { observer.observe(el); });
+}
+
+function initLazyVideo() {
+    const videos = document.querySelectorAll('video.lazy-video');
+    if (!videos.length) return;
+
+    // Attach poster + source only when the player is needed, so the page
+    // load never pays for video bytes. preload="none" keeps the source off
+    // the wire until the visitor actually presses play.
+    function load(video) {
+        if (video.dataset.poster) video.poster = video.dataset.poster;
+        if (video.dataset.src && !video.src) video.src = video.dataset.src;
+    }
+
+    if (!('IntersectionObserver' in window)) {
+        videos.forEach(load);
+        return;
+    }
+
+    const observer = new IntersectionObserver(function (entries, obs) {
+        entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+                load(entry.target);
+                obs.unobserve(entry.target);
+            }
+        });
+    }, { rootMargin: '200px 0px' });
+
+    videos.forEach(function (v) { observer.observe(v); });
 }
 
 function initActiveNavigation() {

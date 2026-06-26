@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mechanics Sidekick — Mark Bohaychuk</title>
-    <meta name="description" content="Local CLI RAG assistant for PDF service manuals — contextual retrieval over SQLite, grounded answers with citations, fully offline against Ollama.">
+    <meta name="description" content="An agentic diagnostic assistant: streams live OBD-II telemetry and runs an LLM tool-calling loop that pulls trouble codes from the car, grounds them in service manuals via RAG, and surfaces recalls. Vue + FastAPI, OpenAI, MCP client.">
     <meta name="author" content="Mark Bohaychuk">
     <meta name="theme-color" content="#2e5d4f">
     <link rel="canonical" href="https://mark.bohaychuk.com/projects/mechanics-sidekick.html">
@@ -13,12 +13,12 @@
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://mark.bohaychuk.com/projects/mechanics-sidekick.html">
     <meta property="og:title" content="Mechanics Sidekick — Mark Bohaychuk">
-    <meta property="og:description" content="Local CLI RAG assistant for PDF service manuals — contextual retrieval over SQLite, grounded answers with citations, fully offline against Ollama.">
-    <meta property="og:image" content="https://mark.bohaychuk.com/images/mechanics-sidekick/terminal-session.png">
+    <meta property="og:description" content="An agentic diagnostic assistant: live OBD-II telemetry plus an LLM that calls tools to pull codes, ground them in service manuals, and surface recalls.">
+    <meta property="og:image" content="https://mark.bohaychuk.com/images/mechanics-sidekick/demo-poster.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Mechanics Sidekick — Mark Bohaychuk">
-    <meta name="twitter:description" content="Local CLI RAG assistant for service manuals, grounded with citations.">
-    <meta name="twitter:image" content="https://mark.bohaychuk.com/images/mechanics-sidekick/terminal-session.png">
+    <meta name="twitter:description" content="Agentic vehicle diagnostics: live OBD-II data, tool-calling over service manuals, recalls — all cited.">
+    <meta name="twitter:image" content="https://mark.bohaychuk.com/images/mechanics-sidekick/demo-poster.jpg">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,44 +38,62 @@
     <main class="project-detail">
         <div class="container">
             <div class="project-header">
-                <p class="eyebrow">RAG · Local LLM</p>
+                <p class="eyebrow">Agentic · MCP · RAG</p>
                 <h1 class="project-detail-title">Mechanics Sidekick</h1>
-                <p class="project-detail-subtitle">Local CLI RAG assistant for service manuals</p>
+                <p class="project-detail-subtitle">An agentic assistant for live vehicle diagnostics and service manuals</p>
             </div>
 
             <section class="project-section">
                 <h2>Overview</h2>
                 <p class="project-text">
-                    I've got a bunch of PDF service manuals for an old car, scattered across dozens of files, none of them organized into one clean book. Finding a torque spec or a wiring diagram usually meant opening five PDFs and Ctrl-F'ing each one. Mechanics Sidekick is the tool I wanted for that problem. It's a local CLI where I upload the PDFs once, open a "job" for whatever I'm working on, and ask questions in natural language. Answers come back with citations to the exact document and page so I can go verify them myself.
+                    It started as a command-line RAG tool. I had a pile of PDF service manuals for an old car, none of them organized into one clean book, and finding a torque spec or a wiring diagram meant opening five PDFs and Ctrl-F'ing each one. I wanted to ask the manuals questions instead. That core still exists — but the project has since grown into a web app that plugs into the car itself. Mechanics Sidekick now reads live data straight off the OBD-II port, and the chat is an agent: when I ask a question, an LLM decides which tools to call — search the manuals, read live sensor values and trouble codes from the scanner, look up recalls on the web — and chains them together. Answers come back with citations to the exact document and page so I can go verify them.
                 </p>
+            </section>
+
+            <section class="project-section">
+                <h2>Demo</h2>
+                <div class="media-grid">
+                    <div class="media-item">
+                        <video class="lazy-video" controls preload="none" playsinline
+                               width="1280" height="720"
+                               data-poster="../images/mechanics-sidekick/demo-poster.jpg"
+                               data-src="../images/mechanics-sidekick/demo.mp4">
+                            Your browser can't play embedded video.
+                            <a href="../images/mechanics-sidekick/demo.mp4">Download the demo (MP4)</a>.
+                        </video>
+                    </div>
+                </div>
+                <p class="media-note"><em>A full diagnostic on a 2015 Ford F-150 5.0L. Live telemetry streams off the OBD-II reader — RPM, coolant temp, engine load — then I ask the agent to pull the trouble codes. It reads P0706/P0707 from the scanner, grounds them in the truck's service manual (Transmission Range Sensor circuit, with page citations), and surfaces the matching NHTSA recall — 26V237000, where a lost signal between the range sensor and the PCM can drop the transmission into second gear. One question, three tools, every claim cited.</em></p>
             </section>
 
             <section class="project-section">
                 <h2>Technology Stack</h2>
                 <div class="tech-grid">
                     <div class="tech-item">
-                        <h3>Core</h3>
+                        <h3>Frontend</h3>
                         <ul>
-                            <li>Python 3.11+</li>
-                            <li>Typer + Rich (CLI)</li>
-                            <li>Pydantic Settings</li>
-                            <li>pytest</li>
+                            <li>Vue 3 + TypeScript</li>
+                            <li>Vite</li>
+                            <li>Tailwind CSS v4</li>
+                            <li>Pinia + vue-router</li>
                         </ul>
                     </div>
                     <div class="tech-item">
-                        <h3>Data</h3>
+                        <h3>Backend &amp; Agent</h3>
                         <ul>
-                            <li>SQLite</li>
-                            <li>SQLAlchemy 2.0</li>
-                            <li>PyMuPDF (PDF extraction)</li>
+                            <li>Python · FastAPI</li>
+                            <li>Uvicorn (SSE streaming)</li>
+                            <li>OpenAI tool-calling loop</li>
+                            <li>MCP Python SDK (client)</li>
                         </ul>
                     </div>
                     <div class="tech-item">
-                        <h3>Local LLM</h3>
+                        <h3>AI &amp; Data</h3>
                         <ul>
-                            <li>Ollama</li>
-                            <li>llama3.2:3b (chat + context)</li>
-                            <li>nomic-embed-text (embeddings)</li>
+                            <li>gpt-4.1-mini</li>
+                            <li>text-embedding-3-small</li>
+                            <li>SQLite + SQLAlchemy 2.0</li>
+                            <li>PyMuPDF · Tavily</li>
                         </ul>
                     </div>
                 </div>
@@ -85,45 +103,31 @@
                 <h2>Architecture &amp; Design Choices</h2>
                 <div class="highlight-box">
                     <p>
-                        Everything runs against Ollama on my own machine. No API keys, no cloud, no monthly bill. The honest reason is I wanted to play with local LLMs and see what the current generation could actually do. Nothing leaving my machine is a nice side effect, not the driver.
+                        The chat isn't a single RAG call anymore — it's a tool-calling loop. Each turn the model picks from a set of tools and can chain several before it answers: <code>search_manuals</code> (the RAG pipeline), the live OBD tools, a web search for recalls and bulletins, and a lookup of past diagnostic reports. The OBD tools aren't built in — they come from a separate project, the <a href="obd-ii-mcp-server.html">OBD-II MCP Server</a>, which Mechanics Sidekick connects to as a standard MCP client over stdio. Destructive tools (like clearing codes) are filtered out by a denylist, so the assistant stays read-only against the car by default.
                     </p>
                 </div>
                 <div class="highlight-box">
                     <p>
-                        Most RAG setups reach for pgvector, Qdrant, or Chroma. I just stored everything in SQLite, embeddings and all. This was my first RAG project, it's single-user, and I wanted to build it with tools I already knew rather than fighting a new database at the same time as learning RAG. Swapping in a real vector store later is straightforward if I ever need it, but for a single-user CLI SQLite is fine.
+                        The original app <em>was</em> the RAG pipeline, and that pipeline is now just one tool the agent reaches for. The retrieval is still the part I'm most proud of. Naive chunking on a service manual destroys context — a torque value lifted from the middle of a procedure loses which engine and which system it belonged to. So chunking is structure-aware: the PDF extractor reads font metadata (bold, ALL CAPS, size jumps) to detect section headings, and before each chunk is embedded a short LLM-generated summary situates it in the manual. The embedding represents the chunk <em>plus</em> its place, not just the raw words. A cross-encoder reranker then re-scores the top candidates against that same contextual signal before they reach the model.
                     </p>
                 </div>
                 <div class="highlight-box">
                     <p>
-                        Naive chunking on service manuals destroys context — a torque value lifted from the middle of a procedure loses the engine variant, the system, and the step it belonged to. So before each chunk gets embedded, a lightweight LLM call generates a short summary that situates it (which engine, which system, which procedure) and that summary is prepended to the chunk text. It's contextual retrieval — the embedding represents the chunk plus its place in the manual, not just the raw words.
-                    </p>
-                    <p>
-                        Chunking itself is structure-aware rather than fixed-size. The PDF extractor reads font metadata (bold, ALL CAPS, font-size jumps) to detect section headings, and every chunk carries the section title it came from. That keeps related steps together and gives the retriever something to anchor on beyond raw similarity.
+                        v1 ran fully offline against Ollama on my own machine. I rebuilt it cloud-first on OpenAI — gpt-4.1-mini for chat, text-embedding-3-small for embeddings — because the tool-calling and answer quality were a clear step up for this kind of work. The model layer is kept behind a seam, with the Ollama path still in the code, so a local-only mode can come back later. But today it talks to the cloud, and I'd rather say that plainly than pretend otherwise.
                     </p>
                 </div>
-            </section>
-
-            <section class="project-section">
-                <h2>Project Media</h2>
-                <div class="media-grid">
-                    <div class="media-item">
-                        <img src="../images/mechanics-sidekick/terminal-session.gif"
-                             alt="End-to-end terminal session: register a 2004 Audi A8, ingest a cylinder-head service manual, open a job, ask 'What is the intake valve stem diameter?' and get '5.97-5.98 mm' back with PDF page citations. Runs locally against Ollama."
-                             loading="lazy">
-                    </div>
-                </div>
-                <p class="media-note"><em>Full workflow in one take — vehicle → ingest → job → cited answer. Runs fully locally against Ollama; nothing leaves the machine.</em></p>
             </section>
 
             <section class="project-section">
                 <h2>What Works Today</h2>
                 <p class="project-text">
-                    Add a vehicle, upload one or more PDF manuals, open a job against that vehicle, and chat with it. PDFs get extracted page by page, split into overlapping chunks, embedded locally, and stored in SQLite. When I ask a question the system embeds it, pulls the nearest chunks by brute-force cosine similarity over the full corpus, and sends them to the local LLM along with the question. There's no reranker — retrieved chunks go straight to the model. Answers come back cited. I've been running it against my own library of manuals.
+                    Add a vehicle, upload its service manuals, and chat. With an OBD-II adapter plugged in, the live dashboard streams sensor values over SSE and the agent can read trouble codes and freeze-frame data straight from the car. Responses stream token by token, with tool activity shown as it happens and manual citations inline. I've run the full loop on a real truck — a 2015 F-150 — from live telemetry to a cited answer to a matching recall. If no scanner is connected, the assistant still works against the manuals and the web; the live views just prompt you to connect one.
                 </p>
             </section>
 
             <div class="project-cta">
                 <a href="https://github.com/mbohaychuk/Mechanics-Sidekick" class="btn btn-secondary" target="_blank" rel="noopener">View on GitHub</a>
+                <a href="obd-ii-mcp-server.html" class="btn btn-secondary">The OBD-II MCP Server →</a>
                 <a href="../index.html" class="btn btn-primary">View more projects</a>
             </div>
         </div>
