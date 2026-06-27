@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CarBuyerAssistant — Mark Bohaychuk</title>
-    <meta name="description" content="A 10-process pipeline that hunts vehicle deals at Western Canadian auctions — Postgres NOTIFY/LISTEN queue, LLM lot scoring, and Discord alerts on soft-close.">
+    <meta name="description" content="A 13-process pipeline that hunts vehicle deals at Western Canadian auctions — Postgres NOTIFY/LISTEN queue, LLM lot scoring, and Discord alerts on soft-close.">
     <meta name="author" content="Mark Bohaychuk">
     <meta name="theme-color" content="#2e5d4f">
     <link rel="canonical" href="https://mark.bohaychuk.com/projects/carbuyer.html">
@@ -13,11 +13,11 @@
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://mark.bohaychuk.com/projects/carbuyer.html">
     <meta property="og:title" content="CarBuyerAssistant — Mark Bohaychuk">
-    <meta property="og:description" content="A 10-process pipeline that hunts vehicle deals at Western Canadian auctions — Postgres NOTIFY/LISTEN queue, LLM lot scoring, and Discord alerts on soft-close.">
+    <meta property="og:description" content="A 13-process pipeline that hunts vehicle deals at Western Canadian auctions — Postgres NOTIFY/LISTEN queue, LLM lot scoring, and Discord alerts on soft-close.">
     <meta property="og:image" content="https://mark.bohaychuk.com/images/og-card.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="CarBuyerAssistant — Mark Bohaychuk">
-    <meta name="twitter:description" content="A 10-process pipeline that hunts vehicle deals at Western Canadian auctions.">
+    <meta name="twitter:description" content="A 13-process pipeline that hunts vehicle deals at Western Canadian auctions.">
     <meta name="twitter:image" content="https://mark.bohaychuk.com/images/og-card.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -40,16 +40,16 @@
             <div class="project-header">
                 <p class="eyebrow">Backend · Python</p>
                 <h1 class="project-detail-title">CarBuyerAssistant</h1>
-                <p class="project-detail-subtitle">A 10-process pipeline that hunts vehicle deals at Western Canadian auctions</p>
+                <p class="project-detail-subtitle">A 13-process pipeline that hunts vehicle deals at Western Canadian auctions</p>
             </div>
 
             <section class="project-section">
                 <h2>Overview</h2>
                 <p class="project-text">
-                    The actual deals on used vehicles in Western Canada are at small farm and estate auctions. Kijiji's deal density collapsed years ago, AutoTrader is dealer markup at retail, and Facebook Marketplace is hostile to scraping. Farm dispersal sales and provincial heavy-equipment auctioneers are where late-model trucks still cross the block at a third of retail — but their catalogs are spread across a dozen sites with no API, soft-close timers, and listings that vanish the moment the hammer drops.
+                    The actual deals on used vehicles in Western Canada are at small farm and estate auctions. Kijiji's deal density collapsed years ago. AutoTrader is just dealer markup at retail, and Facebook Marketplace fights scrapers. Farm dispersal sales and provincial heavy-equipment auctioneers are where late-model trucks still cross the block at a third of retail — but their catalogs are spread across a dozen sites with no API, soft-close timers, and listings that vanish the moment the hammer drops.
                 </p>
                 <p class="project-text">
-                    CarBuyerAssistant is the consolidator those auctioneers will never build. It ingests lots from HiBid (the largest Western Canadian source), enriches each one with an LLM, watches bid trajectories through the soft-close period, and pushes two kinds of Discord alerts: <em>"rare vehicle, you've got days to drive out and look"</em> and <em>"this lot is closing cheap right now."</em> I run it on a Linux box at home; it's been my actual deal-finder for months.
+                    CarBuyerAssistant is the consolidator those auctioneers will never build. It ingests lots from two auction sources, HiBid (the largest Western Canadian source) and McDougall, enriches each one with an LLM, watches bid trajectories through the soft-close period, and pushes two kinds of Discord alerts: <em>"rare vehicle, you've got days to drive out and look"</em> and <em>"this lot is closing cheap right now."</em> I run it on a Linux box at home; it's been my actual deal-finder for months.
                 </p>
             </section>
 
@@ -59,10 +59,10 @@
                     <div class="tech-item">
                         <h3>Workers &amp; Runtime</h3>
                         <ul>
-                            <li>Python 3.13, asyncio</li>
+                            <li>Python 3.14, asyncio</li>
                             <li>SQLAlchemy 2 (async) + Alembic</li>
                             <li>psycopg3 (LISTEN/NOTIFY)</li>
-                            <li>systemd (10 units, timers + continuous)</li>
+                            <li>systemd (14 units, timers + continuous)</li>
                         </ul>
                     </div>
                     <div class="tech-item">
@@ -89,7 +89,7 @@
                 <h2>Architecture &amp; Design Choices</h2>
                 <div class="highlight-box">
                     <p>
-                        Ten processes, all sharing one Postgres. An ingester pulls lots from HiBid's GraphQL endpoint on a 6-hour timer; an enricher describes them with an LLM; a valuator computes fair-value ranges against a growing comp database; a notifier fires Discord embeds; a bid_poller watches active lots; nightly timers run a vision pass on the price shortlist and distill closed lots into historical sales. Each stage NOTIFY/LISTEN-signals the next. Failure of any worker doesn't cascade because Postgres holds the queue state.
+                        Thirteen worker processes, all sharing one Postgres. An ingester pulls lots from each source (HiBid over GraphQL, McDougall over its catalog) on a 6-hour timer; an enricher describes them with an LLM; a valuator computes fair-value ranges against a growing comp database; a notifier fires Discord embeds; a bid_poller watches active lots; nightly timers run a vision pass on the price shortlist and distill closed lots into historical sales. Each stage NOTIFY/LISTEN-signals the next. Failure of any worker doesn't cascade because Postgres holds the queue state.
                     </p>
                     <p>
                         Redis or RabbitMQ would have been the textbook queue choice. Both add a moving part to operate, monitor, and back up. Postgres NOTIFY hands all of that to the database I'm already running, and <code>SELECT ... FOR UPDATE SKIP LOCKED</code> makes claim/process/commit safe under concurrent consumers. The cost is that NOTIFY payloads are limited to ~8KB, so the messages only carry row IDs — claiming requires a follow-up query. For a system whose queue depth never exceeds a few hundred, that's a no-brainer trade.
@@ -123,7 +123,7 @@
             <section class="project-section">
                 <h2>What Works Today</h2>
                 <p class="project-text">
-                    All ten processes run continuously on my home Linux box. HiBid ingest fires every six hours, the worker chain enriches and values each lot end-to-end, the bid_poller tracks live auctions through soft-close, and Discord alerts fire on the two trigger types. The dashboard shows the open feed with side-by-side comps from <code>historical_sales</code>, and slash commands on the Discord bot let me flag, watch, or dismiss lots from my phone. The comp database grew from zero to thousands of observed sales by simply letting the system run.
+                    The pipeline runs on my home Linux box: continuous workers for the live path, plus timer-driven jobs for ingest, the nightly vision pass, and digests. HiBid ingest fires every six hours, the worker chain enriches and values each lot end-to-end, the bid_poller tracks live auctions through soft-close, and Discord alerts fire on the two trigger types. The dashboard shows the open feed with side-by-side comps from <code>historical_sales</code>, and slash commands on the Discord bot let me flag, watch, or dismiss lots from my phone. The comp database grew from zero to more than a thousand observed sales by simply letting the system run.
                 </p>
                 <p class="project-text">
                     The Ritchie Bros and Michener Allen source plugins are deferred to phase 2 — those auctioneers are big enough that manual browsing isn't a hardship. Single-user only; this isn't trying to be a service.

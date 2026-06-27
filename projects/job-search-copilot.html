@@ -46,7 +46,7 @@
             <section class="project-section">
                 <h2>Overview</h2>
                 <p class="project-text">
-                    I was tired of the usual problem with job hunting: the same postings show up on five different sites, most of them aren't a real fit for my resume, and the sites themselves do a mediocre job of ranking them. Job Search Copilot is the matcher I wanted. It pulls postings from Greenhouse, Lever, company career pages, and a couple of aggregators, normalizes the job data, parses my resume into a structured profile, and ranks each job against that profile with an explanation for why it matches or doesn't. It focuses on Edmonton and Calgary software postings, but nothing about the pipeline is region-locked.
+                    I was tired of the usual problem with job hunting: the same postings show up on five different sites, most of them aren't a real fit for my resume, and the sites themselves do a mediocre job of ranking them. Job Search Copilot is the matcher I wanted. It pulls postings from Greenhouse, Lever, company career pages, and a job aggregator (Adzuna), normalizes the job data, parses my resume into a structured profile, and ranks each job against that profile with an explanation for why it matches or doesn't. It focuses on Edmonton and Calgary software postings, but nothing about the pipeline is region-locked.
                 </p>
             </section>
 
@@ -87,7 +87,7 @@
                 <h2>Architecture &amp; Design Choices</h2>
                 <div class="highlight-box">
                     <p>
-                        There are two ingestion pipelines. The stored one persists jobs from sources that allow it — Greenhouse and Lever. The ephemeral one runs at query time, caches results in memory with a short TTL, and never writes to disk. The split exists because one of the sources I wanted to use is a job aggregator whose terms of service don't allow storing scraped data. Splitting lets me use it legally. Both paths share the same fetcher, normalizer, embedding, and ranking code underneath.
+                        There are two ingestion pipelines. The stored one persists jobs from sources that allow it — Greenhouse, Lever, company career pages, and generic HTML scrapes. The ephemeral one runs at query time, caches results in memory with a short TTL, and never writes to disk. The split exists because one of the sources I wanted to use is a job aggregator whose terms of service don't allow storing scraped data. Splitting lets me use it legally. Both paths share the same fetcher, normalizer, embedding, and ranking code underneath.
                     </p>
                 </div>
                 <div class="highlight-box">
@@ -122,7 +122,7 @@
             <section class="project-section">
                 <h2>What Works Today</h2>
                 <p class="project-text">
-                    The system runs end-to-end. I can upload my resume, trigger a collection run across the configured sources, and get back a ranked list of postings with per-job explanations. It's a single-user MVP — it's meant for me to use, not to be a product. The auto-apply layer is deliberately not built yet, and won't be until I trust the ranking underneath.
+                    The system runs end-to-end. I can upload my resume, trigger a collection run across the configured sources, and get back a ranked list of postings with per-job explanations. It's a single-user MVP, meant for me rather than as a product. The auto-apply layer is deliberately not built yet, and won't be until I trust the ranking underneath.
                 </p>
             </section>
 

@@ -385,6 +385,7 @@ strong { font-weight: 600; }
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    position: relative;
     transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
 }
 
@@ -485,6 +486,15 @@ strong { font-weight: 600; }
     align-items: center;
     gap: 0.4rem;
     align-self: flex-start;
+}
+
+/* Stretch the link's hit area over the whole card so clicking anywhere
+   on the card navigates, while keeping a real, focusable anchor. */
+.project-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
 }
 
 .project-link .arrow {

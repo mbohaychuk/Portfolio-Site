@@ -63,7 +63,7 @@
                         </video>
                     </div>
                 </div>
-                <p class="media-note"><em>A full diagnostic on a 2015 Ford F-150 5.0L. Live telemetry streams off the OBD-II reader — RPM, coolant temp, engine load — then I ask the agent to pull the trouble codes. It reads P0706/P0707 from the scanner, grounds them in the truck's service manual (Transmission Range Sensor circuit, with page citations), and surfaces the matching NHTSA recall — 26V237000, where a lost signal between the range sensor and the PCM can drop the transmission into second gear. One question, three tools, every claim cited.</em></p>
+                <p class="media-note"><em>A full diagnostic on a 2015 Ford F-150 5.0L. Live telemetry streams off the OBD-II reader (RPM, coolant temp, engine load), then I ask the agent to pull the trouble codes. It reads P0706/P0707 from the scanner, grounds them in the truck's service manual (Transmission Range Sensor circuit, with page citations), and surfaces the matching NHTSA recall, 26V237000, where a lost signal between the range sensor and the PCM can drop the transmission into second gear. That's one question pulling in three different tools, with every claim cited back to its source.</em></p>
             </section>
 
             <section class="project-section">
@@ -90,7 +90,7 @@
                     <div class="tech-item">
                         <h3>AI &amp; Data</h3>
                         <ul>
-                            <li>gpt-4.1-mini</li>
+                            <li>gpt-5.4</li>
                             <li>text-embedding-3-small</li>
                             <li>SQLite + SQLAlchemy 2.0</li>
                             <li>PyMuPDF · Tavily</li>
@@ -103,17 +103,17 @@
                 <h2>Architecture &amp; Design Choices</h2>
                 <div class="highlight-box">
                     <p>
-                        The chat isn't a single RAG call anymore — it's a tool-calling loop. Each turn the model picks from a set of tools and can chain several before it answers: <code>search_manuals</code> (the RAG pipeline), the live OBD tools, a web search for recalls and bulletins, and a lookup of past diagnostic reports. The OBD tools aren't built in — they come from a separate project, the <a href="obd-ii-mcp-server.html">OBD-II MCP Server</a>, which Mechanics Sidekick connects to as a standard MCP client over stdio. Destructive tools (like clearing codes) are filtered out by a denylist, so the assistant stays read-only against the car by default.
+                        The chat used to be a single RAG call. Now it's a tool-calling loop. Each turn the model picks from a set of tools and can chain several before it answers: <code>search_manuals</code> (the RAG pipeline), the live OBD tools, a web search for recalls and bulletins, and a lookup of past diagnostic reports. The OBD tools come from a separate project, the <a href="obd-ii-mcp-server.html">OBD-II MCP Server</a>, which Mechanics Sidekick connects to as a standard MCP client over stdio. Anything the server marks destructive (like clearing codes) is dropped automatically, and a short denylist removes a few more, so the assistant stays read-only against the car.
                     </p>
                 </div>
                 <div class="highlight-box">
                     <p>
-                        The original app <em>was</em> the RAG pipeline, and that pipeline is now just one tool the agent reaches for. The retrieval is still the part I'm most proud of. Naive chunking on a service manual destroys context — a torque value lifted from the middle of a procedure loses which engine and which system it belonged to. So chunking is structure-aware: the PDF extractor reads font metadata (bold, ALL CAPS, size jumps) to detect section headings, and before each chunk is embedded a short LLM-generated summary situates it in the manual. The embedding represents the chunk <em>plus</em> its place, not just the raw words. A cross-encoder reranker then re-scores the top candidates against that same contextual signal before they reach the model.
+                        The original app <em>was</em> the RAG pipeline, and that pipeline is now just one tool the agent reaches for. The retrieval is still the part I'm most proud of. Naive chunking on a service manual destroys context — a torque value lifted from the middle of a procedure loses which engine and which system it belonged to. So chunking is structure-aware: the PDF extractor reads font metadata (bold, ALL CAPS, size jumps) to detect section headings, and before each chunk is embedded a short LLM-generated summary situates it in the manual. The embedding represents the chunk <em>plus</em> its place, not just the raw words. A cross-encoder reranker can re-score the top candidates against that same signal, but it's off by default and kicks in only for procedure-style questions; exact spec and code lookups skip it, since reranking tends to hurt those.
                     </p>
                 </div>
                 <div class="highlight-box">
                     <p>
-                        v1 ran fully offline against Ollama on my own machine. I rebuilt it cloud-first on OpenAI — gpt-4.1-mini for chat, text-embedding-3-small for embeddings — because the tool-calling and answer quality were a clear step up for this kind of work. The model layer is kept behind a seam, with the Ollama path still in the code, so a local-only mode can come back later. But today it talks to the cloud, and I'd rather say that plainly than pretend otherwise.
+                        v1 ran fully offline against Ollama on my own machine. I rebuilt it cloud-first on OpenAI (gpt-5.4 for chat, text-embedding-3-small for embeddings) because the tool-calling and answer quality were a clear step up for this kind of work. The model layer is kept behind a seam, with the Ollama path still in the code, so a local-only mode can come back later. But today it talks to the cloud.
                     </p>
                 </div>
             </section>
@@ -121,7 +121,7 @@
             <section class="project-section">
                 <h2>What Works Today</h2>
                 <p class="project-text">
-                    Add a vehicle, upload its service manuals, and chat. With an OBD-II adapter plugged in, the live dashboard streams sensor values over SSE and the agent can read trouble codes and freeze-frame data straight from the car. Responses stream token by token, with tool activity shown as it happens and manual citations inline. I've run the full loop on a real truck — a 2015 F-150 — from live telemetry to a cited answer to a matching recall. If no scanner is connected, the assistant still works against the manuals and the web; the live views just prompt you to connect one.
+                    Add a vehicle, upload its service manuals, and chat. With an OBD-II adapter plugged in, the live dashboard streams sensor values over SSE and the agent can read trouble codes and freeze-frame data straight from the car. Responses stream token by token, with tool activity shown as it happens and manual citations inline. A separate guided-diagnostic mode walks the car through a short protocol and saves a health report I can pull up later. I've run the full loop on a real truck, a 2015 F-150, from live telemetry to a cited answer to a matching recall. If no scanner is connected, the assistant still works against the manuals and the web; the live views just prompt you to connect one.
                 </p>
             </section>
 

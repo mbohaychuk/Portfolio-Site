@@ -72,10 +72,10 @@
                     <p class="eyebrow">01 / About</p>
                     <h2 class="section-title">About</h2>
                     <p class="about-text">
-                        I'm a software developer based in Alberta, Canada. I work across the stack &mdash; distributed backends, machine-learning and retrieval pipelines, and bare-metal embedded firmware &mdash; and I'm happiest on problems that cross those boundaries.
+                        I'm a software developer based in Alberta, Canada. I work across the stack: distributed backends, machine-learning and retrieval pipelines, and bare-metal embedded firmware. I'm happiest on problems that cross those boundaries.
                     </p>
                     <p class="about-text">
-                        The projects below are all things I wanted to exist and then built end to end: ASP.NET Core and Python services, local and hosted LLM pipelines, a ten-process auction-hunting system, embedded C on an 8-bit microcontroller. The throughline is systems that are honest about their own limits &mdash; explicit pipeline stages, visible failure modes, and design decisions I made for reasons I can explain.
+                        The projects below are all things I wanted to exist and then built end to end: ASP.NET Core and Python services, local and hosted LLM pipelines, a thirteen-process auction-hunting system, embedded C on an 8-bit microcontroller. What they have in common is that they don't hide their limits: pipeline stages are explicit, failure modes are visible, and I can explain every design decision I made.
                     </p>
                     <p class="about-status">Open to new opportunities &mdash; email is the best way to reach me.</p>
                     <div class="about-cta">
@@ -93,6 +93,46 @@
                     <h2 class="section-title">Selected work</h2>
                 </div>
                 <div class="projects-grid">
+                    <!-- Mechanics Sidekick -->
+                    <article class="project-card reveal" data-project="mechanics-sidekick">
+                        <div class="project-media">
+                            <img class="project-shot" src="images/mechanics-sidekick/chat-citations.jpg" alt="Mechanics Sidekick answering with trouble codes grounded in a service manual and a matching recall, citations inline" loading="lazy" decoding="async">
+                        </div>
+                        <div class="project-content">
+                            <h3 class="project-title">Mechanics Sidekick</h3>
+                            <p class="project-description">
+                                An agentic diagnostic assistant. Stream live OBD-II data from the car, then let an LLM pull trouble codes, ground them in service manuals, and surface recalls — chaining tools in one chat, every answer cited.
+                            </p>
+                            <div class="project-tags">
+                                <span class="tag">Python</span>
+                                <span class="tag">Vue</span>
+                                <span class="tag">OpenAI</span>
+                                <span class="tag">MCP</span>
+                            </div>
+                            <a href="projects/mechanics-sidekick.html" class="project-link">Read more <span class="arrow" aria-hidden="true">→</span></a>
+                        </div>
+                    </article>
+
+                    <!-- OBD-II MCP Server -->
+                    <article class="project-card reveal" data-project="obd-ii-mcp-server">
+                        <div class="project-media">
+                            <img class="project-shot" src="images/obd-ii-mcp-server/live-telemetry.jpg" alt="Live OBD-II telemetry — RPM, coolant temp, engine load — streamed from a 2015 F-150 through the MCP server" loading="lazy" decoding="async">
+                        </div>
+                        <div class="project-content">
+                            <h3 class="project-title">OBD-II MCP Server</h3>
+                            <p class="project-description">
+                                An MCP server that exposes a car's live diagnostics to LLM agents as tools — sensor reads, trouble codes, freeze frame, emissions readiness, VIN decode, and NHTSA recalls — over an ELM327 adapter.
+                            </p>
+                            <div class="project-tags">
+                                <span class="tag">Python</span>
+                                <span class="tag">MCP</span>
+                                <span class="tag">FastMCP</span>
+                                <span class="tag">OBD-II</span>
+                            </div>
+                            <a href="projects/obd-ii-mcp-server.html" class="project-link">Read more <span class="arrow" aria-hidden="true">→</span></a>
+                        </div>
+                    </article>
+
                     <!-- CarBuyerAssistant -->
                     <article class="project-card reveal" data-project="carbuyer">
                         <div class="project-media">
@@ -109,7 +149,7 @@
                         <div class="project-content">
                             <h3 class="project-title">CarBuyerAssistant</h3>
                             <p class="project-description">
-                                A 10-process pipeline that hunts vehicle deals at Western Canadian auctions. Postgres NOTIFY/LISTEN queue, advisory-lock single-instance enforcement, GraphQL ingest behind Cloudflare, Discord alerts on soft-close.
+                                A 13-process pipeline that hunts vehicle deals at Western Canadian auctions. Postgres NOTIFY/LISTEN queue, advisory-lock single-instance enforcement, GraphQL ingest behind Cloudflare, Discord alerts on soft-close.
                             </p>
                             <div class="project-tags">
                                 <span class="tag">Python</span>
@@ -160,46 +200,6 @@
                                 <span class="tag">OpenAI</span>
                             </div>
                             <a href="projects/job-search-copilot.html" class="project-link">Read more <span class="arrow" aria-hidden="true">→</span></a>
-                        </div>
-                    </article>
-
-                    <!-- Mechanics Sidekick -->
-                    <article class="project-card reveal" data-project="mechanics-sidekick">
-                        <div class="project-media">
-                            <img class="project-shot" src="images/mechanics-sidekick/chat-citations.jpg" alt="Mechanics Sidekick answering with trouble codes grounded in a service manual and a matching recall, citations inline" loading="lazy" decoding="async">
-                        </div>
-                        <div class="project-content">
-                            <h3 class="project-title">Mechanics Sidekick</h3>
-                            <p class="project-description">
-                                An agentic diagnostic assistant. Stream live OBD-II data from the car, then let an LLM pull trouble codes, ground them in service manuals, and surface recalls — chaining tools in one chat, every answer cited.
-                            </p>
-                            <div class="project-tags">
-                                <span class="tag">Python</span>
-                                <span class="tag">Vue</span>
-                                <span class="tag">OpenAI</span>
-                                <span class="tag">MCP</span>
-                            </div>
-                            <a href="projects/mechanics-sidekick.html" class="project-link">Read more <span class="arrow" aria-hidden="true">→</span></a>
-                        </div>
-                    </article>
-
-                    <!-- OBD-II MCP Server -->
-                    <article class="project-card reveal" data-project="obd-ii-mcp-server">
-                        <div class="project-media">
-                            <img class="project-shot" src="images/obd-ii-mcp-server/live-telemetry.jpg" alt="Live OBD-II telemetry — RPM, coolant temp, engine load — streamed from a 2015 F-150 through the MCP server" loading="lazy" decoding="async">
-                        </div>
-                        <div class="project-content">
-                            <h3 class="project-title">OBD-II MCP Server</h3>
-                            <p class="project-description">
-                                An MCP server that exposes a car's live diagnostics to LLM agents as tools — sensor reads, trouble codes, freeze frame, emissions readiness, VIN decode, and NHTSA recalls — over an ELM327 adapter.
-                            </p>
-                            <div class="project-tags">
-                                <span class="tag">Python</span>
-                                <span class="tag">MCP</span>
-                                <span class="tag">FastMCP</span>
-                                <span class="tag">OBD-II</span>
-                            </div>
-                            <a href="projects/obd-ii-mcp-server.html" class="project-link">Read more <span class="arrow" aria-hidden="true">→</span></a>
                         </div>
                     </article>
 

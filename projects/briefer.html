@@ -66,7 +66,7 @@
                         <h3>ML Service</h3>
                         <ul>
                             <li>Python + FastAPI</li>
-                            <li>Ollama + Gemma 3</li>
+                            <li>Ollama + Gemma 4</li>
                             <li>sentence-transformers</li>
                             <li>bge-reranker cross-encoder</li>
                         </ul>
@@ -93,7 +93,7 @@
                         So instead the system filters progressively. A cheap vector search runs first and drops the obvious non-matches. A cross-encoder reranks what's left. Only the borderline cases actually hit the LLM.
                     </p>
                     <p>
-                        Cost was the original driver, but running locally turned out to matter more. I run Briefer against Ollama with Gemma 3, which means the LLM serializes — I can't fan out parallel calls the way I could against a paid API. Every article the cascade filters out before the LLM is a direct speedup, not just a cost saving.
+                        Cost was the original driver, but running locally turned out to matter more. I run Briefer against Ollama with Gemma 4, which means the LLM serializes — I can't fan out parallel calls the way I could against a paid API. Every article the cascade filters out before the LLM is a direct speedup, not just a cost saving.
                     </p>
                 </div>
                 <div class="highlight-box">
@@ -103,7 +103,7 @@
                 </div>
                 <div class="highlight-box">
                     <p>
-                        Users describe their interests in plain English paragraphs, not tags or boolean rules. Keyword alerts and tag filters only find matches on vocabulary overlap, which is exactly the cases Briefer is trying to get past. Giving the LLM rich context about <em>why</em> a user cares about something is what lets it reason about relevance instead of pattern-matching on terms.
+                        Users describe their interests in plain English paragraphs, not tags or boolean rules. Keyword alerts and tag filters only find matches on vocabulary overlap, which is exactly the cases Briefer is trying to get past. Giving the LLM rich context about <em>why</em> a user cares about something is what lets it reason about relevance rather than just matching vocabulary.
                     </p>
                     <p>
                         Each interest block is embedded and queried separately instead of being averaged into a single vector — standard multi-vector RAG. Averaging would blur niche interests into broad ones and defeat the whole point.
@@ -131,7 +131,7 @@
             <section class="project-section">
                 <h2>What Works Today</h2>
                 <p class="project-text">
-                    Briefer is still in active development. It runs end-to-end against Ollama with Gemma 3 — ingesting articles, building user profiles, running the cascade, producing scored and summarized briefings. I've demoed it to my brother and I'm hoping it becomes something he actually uses day-to-day. If that works, the next step is expanding it beyond one user and potentially turning it into a service.
+                    Briefer is still in active development. It runs end-to-end against Ollama with Gemma 4 — ingesting articles, building user profiles, running the cascade, producing scored and summarized briefings. I've demoed it to my brother and I'm hoping it becomes something he actually uses day-to-day. If that works, the next step is expanding it beyond one user and potentially turning it into a service.
                 </p>
             </section>
 

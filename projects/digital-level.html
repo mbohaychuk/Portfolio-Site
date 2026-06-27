@@ -46,7 +46,7 @@
             <section class="project-section">
                 <h2>Overview</h2>
                 <p class="project-text">
-                    A two-axis digital level I built from scratch around an ATmega328 microcontroller, an ADXL343 accelerometer, and an SSD1306 OLED display. The device runs on four AA batteries through a linear regulator, reads the accelerometer on a fixed interval, converts raw XYZ values into a tilt angle, and draws a dot on the OLED that moves away from center as the unit tilts. Past a threshold on either axis it stops drawing the dot and lights up the corresponding side of the screen instead. Everything lives inside a 3D-printed case with a custom PCB. Built as a course project alongside my capstone.
+                    A two-axis digital level I built from scratch around an ATmega328 microcontroller, an ADXL343 accelerometer, and an SSD1306 OLED display. The device runs on four AA batteries through a linear regulator. On a fixed interval it reads the accelerometer, turns the raw XYZ values into a tilt angle, and draws a dot on the OLED that moves away from center as the unit tilts. Past a threshold on either axis it stops drawing the dot and lights up the corresponding side of the screen instead. Everything lives inside a 3D-printed case with a custom PCB. Built as a course project alongside my capstone.
                 </p>
             </section>
 
@@ -86,7 +86,7 @@
                 <h2>Architecture &amp; Design Choices</h2>
                 <div class="highlight-box">
                     <p>
-                        The screen updates around five times a second, which makes the level feel sluggish next to a commercial unit. I'd assumed the bottleneck was I²C transport, but the bus is already at 400 kHz and the renderer only flushes dirty banks, not the full framebuffer — both of those are fine. The real cost is the circle drawing routine. It walks the perimeter in fine angular steps and calls <code>cos()</code> and <code>sin()</code> on every step, four circles per frame between the two clear-and-redraw passes. The ATmega328 has no FPU, so each soft-float trig call is roughly a thousand cycles, and at 8 MHz the trig alone burns about 125 ms per frame — almost exactly the observed 5–7 Hz. The fix is a precomputed unit-circle lookup table in PROGMEM (or a midpoint Bresenham circle), which would drop per-frame cost by two orders of magnitude and push the refresh well past 50 Hz.
+                        The screen updates around five times a second, which makes the level feel sluggish next to a commercial unit. I'd assumed the bottleneck was I²C transport, but the bus is already at 400 kHz and the renderer only flushes dirty banks, not the full framebuffer — both of those are fine. The real cost is the circle drawing routine. It walks the perimeter in fine angular steps and calls <code>cos()</code> and <code>sin()</code> on every step, four circles per frame between the two clear-and-redraw passes. The ATmega328 has no FPU, so each soft-float trig call is roughly a thousand cycles, and at 8 MHz the trig alone burns about 125 ms per frame, roughly 8 Hz on its own; the clear-and-redraw passes and the accelerometer read add enough on top to land at the observed 5–7 Hz. The fix is a precomputed unit-circle lookup table in PROGMEM (or a midpoint Bresenham circle), which would drop per-frame cost by two orders of magnitude and push the refresh well past 50 Hz.
                     </p>
                 </div>
                 <div class="highlight-box">
@@ -104,7 +104,7 @@
             <section class="project-section">
                 <h2>What Works Today</h2>
                 <p class="project-text">
-                    Powers on, shows a dot that tracks the current tilt in real time, and lights up the corresponding side of the OLED when the tilt goes past threshold on either axis. That's the demo. No "approaching level" feedback — color, blink, beeper — shipped.
+                    Powers on, shows a dot that tracks the current tilt in real time, and lights up the corresponding side of the OLED when the tilt goes past threshold on either axis. That's the demo. No gradual "approaching level" feedback shipped; the beeper that would chirp as you neared level was a stretch goal that got cut.
                 </p>
             </section>
 

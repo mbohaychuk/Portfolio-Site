@@ -46,7 +46,7 @@
             <section class="project-section">
                 <h2>Overview</h2>
                 <p class="project-text">
-                    Every car built since the mid-90s has an OBD-II port that speaks a standard diagnostic protocol — engine RPM, coolant temperature, trouble codes, emissions readiness, the lot. Reading it normally means a handheld scanner or hand-rolled serial code. This is an MCP server that puts all of that behind a clean set of tools an LLM can call. Plug an inexpensive ELM327 adapter into the car, point an MCP client at the server, and the model can ask the vehicle questions directly: what's running hot, what codes are stored, what the freeze-frame looked like when a fault tripped, whether there's an open recall. It's the bridge between an agent and the actual hardware in the driveway.
+                    Every car built since the mid-90s has an OBD-II port that speaks a standard diagnostic protocol — engine RPM, coolant temperature, trouble codes, emissions readiness, the lot. Reading it normally means a handheld scanner or hand-rolled serial code. This is an MCP server that puts all of that behind a set of tools an LLM can call. Plug an inexpensive ELM327 adapter into the car, point an MCP client at the server, and the model can ask the vehicle questions directly: what's running hot, what codes are stored, what the freeze-frame looked like when a fault tripped, whether there's an open recall. It's what connects an agent to the actual hardware in the driveway.
                 </p>
             </section>
 
@@ -75,7 +75,7 @@
                             <li>Python 3.11+</li>
                             <li>FastMCP</li>
                             <li>stdio transport</li>
-                            <li>pytest (116 tests)</li>
+                            <li>pytest (148 tests)</li>
                         </ul>
                     </div>
                     <div class="tech-item">
@@ -143,7 +143,7 @@
                 <h2>Architecture &amp; Design Choices</h2>
                 <div class="highlight-box">
                     <p>
-                        It speaks MCP over stdio, so any client launches it as a subprocess. The ELM327 handshake is slow, so a single connection is opened once in the server's lifespan and pooled for the life of the process rather than re-dialed per call. The same pyserial URL scheme covers a USB cable, a Bluetooth adapter, a WiFi ELM327 clone, or a simulator — which is how the 116-test suite runs in CI against Ircama's ELM327 emulator with no hardware attached.
+                        It speaks MCP over stdio, so any client launches it as a subprocess. The ELM327 handshake is slow, so a single connection is opened once in the server's lifespan and pooled for the life of the process rather than re-dialed per call. The same pyserial URL scheme covers a USB cable, a Bluetooth adapter, a WiFi ELM327 clone, or a simulator — which is how the 148-test suite runs in CI against Ircama's ELM327 emulator with no hardware attached.
                     </p>
                 </div>
                 <div class="highlight-box">
@@ -161,7 +161,7 @@
             <section class="project-section">
                 <h2>What Works Today</h2>
                 <p class="project-text">
-                    v0.1.0, 116 tests, CI green. Validated against the ELM327 simulator and confirmed on a real vehicle — a 2015 F-150. Live PID reads, trouble codes with manufacturer-specific decoding, freeze-frame data, emissions readiness, VIN decode through NHTSA, recall and complaint lookups, and time-bounded session recording all work end to end. Manufacturer Mode 22 signals currently ship as metadata (Ford Mustang and F-150). Licensed Apache-2.0.
+                    v0.1.0, 148 tests, CI green. Validated against the ELM327 simulator and confirmed on a real vehicle — a 2015 F-150. Live PID reads, trouble codes with manufacturer-specific decoding, freeze-frame data, emissions readiness, VIN decode through NHTSA, recall and complaint lookups, and time-bounded session recording all work end to end. Manufacturer Mode 22 signals currently ship as metadata (Ford Mustang and F-150). Licensed Apache-2.0.
                 </p>
             </section>
 
